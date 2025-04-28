@@ -1,0 +1,46 @@
+﻿using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Interaction;
+
+namespace Melodroid_2.MidiMakers;
+
+/// <summary>
+/// Class for turning DryWetMidi.Notes to a Midi File
+/// A midifile usually defines time by multiples of a "tick".
+///     A ticks length in time is set by two factors:
+///         - ticks per quarter note (a.k.a. TimeDivision in MidiFile, a.k.a. Pulses Per Quarter note or PPQ)
+///         - Microseconds Per Quarter Note (MPQN set by tempoevent when creating a TrackChunk which is added to the MidiFile)
+///         The tick length in seconds is then MPQN/(PPQ*1 000 000)
+///         BPM 120 with a quarter note resolution of 4 in 4/4 time gives tick length (500 000/4*1 000 000) = 0.125s
+/// <param name="ticksPerQuarterNote">The smallest logical time division of the music, defined per quarter note by MIDI convention</param>
+/// </summary>
+public class NotesToMidi
+{
+    // Note example, notes are defined in ticks start, duration and velocity
+    //  new (NoteName.A, 4)
+    //        {
+    //            Time = totalMidiTicks,
+    //            Length = songTimeDivision,
+    //            Velocity = (SevenBitNumber)0}
+    public static void WriteNotesToMidi(List<Note> midiNotes, short ticksPerQuarterNote, string folderPath, string fileName, bool overWrite = false)
+    {
+        // TODO how to handle tempo? Separate logical time structure from actual time in seconds using tempomap? Tempochange logic is implicit isochrony change?
+        MidiFile midiFile = new MidiFile();        
+        midiFile.TimeDivision = new TicksPerQuarterNoteTimeDivision(ticksPerQuarterNote);
+        TrackChunk trackChunk = new TrackChunk();               
+        using (TimedObjectsManager<Melanchall.DryWetMidi.Interaction.Note> notesManager = trackChunk.ManageNotes())
+        {
+            TimedObjectsCollection<Melanchall.DryWetMidi.Interaction.Note> notes = notesManager.Objects;
+            //NoteBuilder nb = new NoteBuilder(measures);
+            
+            // Ticks per quarter note
+            foreach (var note in midiNotes)
+            {
+                notes.Add(note);
+            }
+        }
+
+        midiFile.Chunks.Add(trackChunk);
+        midiFile.Write(Path.Combine(folderPath, fileName + ".mid"), overWrite);
+
+    }
+}
