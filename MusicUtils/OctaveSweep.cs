@@ -56,14 +56,13 @@ public class OctaveSweep
         foreach (var clusterTarget in ClusterTargets)
         {
             double clusterTargetAsDouble = clusterTarget.ToDouble();
-            double relativeClusterWidth = clusterTargetAsDouble * ClusterWidth - clusterTargetAsDouble;
-            double upperClusterRange = clusterTargetAsDouble + relativeClusterWidth;
-            double lowerClusterRange = clusterTargetAsDouble - relativeClusterWidth;
+            double upperClusterRange = clusterTargetAsDouble + clusterTargetAsDouble * ClusterWidth;
+            double lowerClusterRange = clusterTargetAsDouble - clusterTargetAsDouble * ClusterWidth;
             clusterRanges.Add((lowerClusterRange, upperClusterRange));
         }
 
         return clusterRanges;
-    }
+    }    
 
     /// <summary>
     /// SweepData represents the result of an octave sweep step.
