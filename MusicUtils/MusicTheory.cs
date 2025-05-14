@@ -16,6 +16,10 @@ public static class MusicTheory
     public static readonly Fraction MinorSeventh = new Fraction(9, 5);
     public static readonly Fraction MajorSeventh = new Fraction(15, 8);
 
+    // Complete Good Fractions
+    public static readonly Fraction SubMajorSecond = new Fraction(10, 9);
+    public static readonly Fraction SubMinorSeventh = new Fraction(16, 9);
+
     // Common fraction sets
     public static readonly List<Fraction> TET12Fractions = [
         Unison,
@@ -30,6 +34,24 @@ public static class MusicTheory
         MinorSeventh,
         MajorSeventh
     ];
+
+    // Common fraction sets
+    public static readonly List<Fraction> GoodFractions = [
+        Unison,
+        MinorSecond,
+        SubMajorSecond,
+        MajorSecond,
+        MinorThird,
+        MajorThird,
+        PerfectFourth,
+        PerfectFifth,
+        MinorSixth,
+        MajorSixth,
+        SubMinorSeventh,
+        MinorSeventh,
+        MajorSeventh
+    ];
+
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,
         PerfectFifth,
