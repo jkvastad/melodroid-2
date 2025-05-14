@@ -9,8 +9,8 @@ internal class Program
     static void Main(string[] args)
     {
         List<Fraction> MajorChord = [Unison, PerfectFifth, MajorThird];
-        List<Fraction> ClusterTargets = TET12Fractions;
-        double clusterWidth = JNDApproximateRelativeFrequency;
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = MaximumBinRadius;
         double sweepStep = 0.001;
         var ratiosToSweep = MajorChord.Select(fraction => fraction.ToDouble()).ToList();
         OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
@@ -43,7 +43,8 @@ internal class Program
                         }
                     }
                     if (ratioMatchingTarget > 0)
-                        Console.Write($"{ratioMatchingTarget,-5:F1} ");
+                        //Console.Write($"{ratioMatchingTarget,-5:F1} ");
+                        Console.Write($"{target.ToString(),-5:F1} ");
                     else
                         Console.Write("      ");
                 }

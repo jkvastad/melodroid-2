@@ -47,7 +47,7 @@ public class OctaveSweep
     {
         for (int i = 0; i < clusterRanges.Count - 1; i++)
             if (clusterRanges[i].upper >= clusterRanges[i + 1].lower)
-                throw new ArgumentException($"Cluster Width causes Cluster Target cluster ranges to overlap at cluster target number {i}");
+                Console.WriteLine($"WARNING: Cluster Width causes Cluster Target cluster ranges to overlap at cluster target number {i}");
     }
 
     public static List<(double lower, double upper)> CalculateClusterRanges(List<Fraction> ClusterTargets, double ClusterWidth)

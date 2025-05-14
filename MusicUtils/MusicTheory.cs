@@ -60,4 +60,7 @@ public static class MusicTheory
 
     // Just-Noticeable-Difference: https://en.wikipedia.org/wiki/Just-noticeable_difference
     public const double JNDApproximateRelativeFrequency = 0.0045; // 0.45%, midway between 500 hz and 1k hz range - JND is frequency dependent
+
+    // Maximum Bin Radius - the maximum bin radius which causes overlap between the good fractions - half of the width 81/80 - 1
+    public const double MaximumBinRadius = (81.0 / 80.0 - 1) / 2.0;
 }
