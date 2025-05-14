@@ -34,8 +34,7 @@ public static class MusicTheory
         MinorSeventh,
         MajorSeventh
     ];
-
-    // Common fraction sets
+    
     public static readonly List<Fraction> GoodFractions = [
         Unison,
         MinorSecond,
@@ -51,6 +50,14 @@ public static class MusicTheory
         MinorSeventh,
         MajorSeventh
     ];
+
+    public static readonly List<Fraction> LCM8 = [
+        Unison,
+        MajorSecond,
+        MajorThird,
+        PerfectFifth,
+        MajorSeventh
+       ];
 
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,

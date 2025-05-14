@@ -8,11 +8,11 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        List<Fraction> MajorChord = [Unison, PerfectFifth, MajorThird];
+        List<Fraction> FractionsToSweep = LCM8;
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = MaximumBinRadius;
         double sweepStep = 0.001;
-        var ratiosToSweep = MajorChord.Select(fraction => fraction.ToDouble()).ToList();
+        var ratiosToSweep = FractionsToSweep.Select(fraction => fraction.ToDouble()).ToList();
         OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
 
         // Write header
