@@ -51,12 +51,23 @@ public static class MusicTheory
         MajorSeventh
     ];
 
+    // A major ninth
     public static readonly List<Fraction> LCM8 = [
         Unison,
         MajorSecond,
         MajorThird,
         PerfectFifth,
         MajorSeventh
+       ];
+
+    // A minor eleventh
+    public static readonly List<Fraction> LCM15 = [
+        Unison,
+        MajorSecond,
+        MinorThird,        
+        PerfectFourth,
+        PerfectFifth,
+        MinorSeventh        
        ];
 
     public static readonly List<Fraction> MajorChordFractions = [
