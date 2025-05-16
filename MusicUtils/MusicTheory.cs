@@ -10,6 +10,7 @@ public static class MusicTheory
     public static readonly Fraction MinorThird = new Fraction(6, 5);
     public static readonly Fraction MajorThird = new Fraction(5, 4);
     public static readonly Fraction PerfectFourth = new Fraction(4, 3);
+    public static readonly Fraction Tritone = new Fraction(7, 5);
     public static readonly Fraction PerfectFifth = new Fraction(3, 2);
     public static readonly Fraction MinorSixth = new Fraction(8, 5);
     public static readonly Fraction MajorSixth = new Fraction(5, 3);
@@ -28,6 +29,7 @@ public static class MusicTheory
         MinorThird,
         MajorThird,
         PerfectFourth,
+        Tritone,
         PerfectFifth,
         MinorSixth,
         MajorSixth,
@@ -78,13 +80,23 @@ public static class MusicTheory
         MinorThird,
         PerfectFourth,        
         PerfectFifth,
-        MinorSeventh,
+        MinorSeventh
        ];
 
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,
-        PerfectFifth,
-        MajorThird
+        MajorThird,
+        PerfectFifth
+        ];
+    public static readonly List<Fraction> MinorChordFractions = [
+        Unison,
+        MinorThird,
+        PerfectFifth
+        ];
+    public static readonly List<Fraction> DimChordFractions = [
+        Unison,
+        MinorThird,
+        Tritone
         ];
 
     // Just-Noticeable-Difference: https://en.wikipedia.org/wiki/Just-noticeable_difference

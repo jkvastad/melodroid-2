@@ -1,9 +1,4 @@
 ﻿using Fractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Melodroid_2.MusicUtils;
 /// <summary>
@@ -14,7 +9,7 @@ namespace Melodroid_2.MusicUtils;
 /// * A cluster width (relative distance around cluster targets in which to bin ratios)
 /// * A sweep step size (increments of the fundamental per sweep step)
 /// The sweep returns all clustering results per sweep step
-/// /// </summary>
+/// </summary>
 public class OctaveSweep
 {
     public List<double> RatiosToSweep { get; set; } = [];

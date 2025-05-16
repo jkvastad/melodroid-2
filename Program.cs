@@ -5,11 +5,42 @@ using static Melodroid_2.MusicUtils.Utils;
 
 namespace Melodroid_2;
 
-internal class Program
+public class Program
 {
+    public static readonly List<Fraction> LCM15_No_Major_Sixth = [
+        Unison,
+        MinorSecond,
+        MinorThird,
+        PerfectFourth,
+        MinorSixth,
+        MinorSeventh
+       ];
+    public static readonly List<Fraction> LCM15_No_Minor_Sixth = [
+        Unison,
+        MinorSecond,
+        MinorThird,
+        PerfectFourth,
+        MajorSixth,
+        MinorSeventh
+       ];
+    public static readonly List<Fraction> LCM15_No_Minor_Seventh = [
+        Unison,
+        MinorSecond,
+        MinorThird,
+        PerfectFourth,
+        MinorSixth,
+        MajorSixth,        
+       ];
+    public static readonly List<Fraction> MinorChord_Tritone = [
+        Unison,        
+        MinorThird,
+        Tritone,
+        PerfectFifth,               
+       ];
+
     static void Main(string[] args)
     {
-        List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
+        List<Fraction> FractionsToSweep = MinorChordFractions;
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = MaximumBinRadius;
         double sweepStep = 0.001;
@@ -53,7 +84,7 @@ internal class Program
             }
             var lcm = LCM(sweepData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
             Console.Write($"{lcm,-5}");
-            Console.Write($"{sweepData.ClusterTargetMatches.Count(),-5}");            
+            Console.Write($"{sweepData.ClusterTargetMatches.Count(),-5}");
             Console.WriteLine();
             previousRow = currentRow;
         }
