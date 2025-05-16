@@ -20,7 +20,8 @@ internal class Program
         Console.Write($"      ");
         foreach (Fraction target in ClusterTargets)
             Console.Write($"{target,-5} ");
-        Console.Write($"LCM", -5);
+        Console.Write($"{"LCM",-5}");
+        Console.Write($"{"Hits",-5}");
         Console.WriteLine();
 
         // Write data
@@ -30,7 +31,7 @@ internal class Program
             // Skip line if empty
             if (sweepData.ClusterTargetMatches.Count == 0)
                 continue;
-           
+
             // Create row to print
             Dictionary<Fraction, double> currentRow = []; // Target keys, ratio sweep value
             foreach (double targetRatio in sweepData.ClusterTargetMatches.Keys)
@@ -51,7 +52,8 @@ internal class Program
                     Console.Write("      ");
             }
             var lcm = LCM(sweepData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
-            Console.Write(lcm);
+            Console.Write($"{lcm,-5}");
+            Console.Write($"{sweepData.ClusterTargetMatches.Count(),-5}");            
             Console.WriteLine();
             previousRow = currentRow;
         }
