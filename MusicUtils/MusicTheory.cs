@@ -60,14 +60,25 @@ public static class MusicTheory
         MajorSeventh
        ];
 
-    // A minor eleventh
+    // Almost a minor eleventh at 12-TET note A#
     public static readonly List<Fraction> LCM15 = [
         Unison,
-        MajorSecond,
+        MinorSecond,
         MinorThird,        
         PerfectFourth,
+        MinorSixth,
+        MajorSixth,
+        MinorSeventh
+       ];
+    
+    // A minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
+    public static readonly List<Fraction> MinorEleventhChord = [
+        Unison,
+        MajorSecond,
+        MinorThird,
+        PerfectFourth,        
         PerfectFifth,
-        MinorSeventh        
+        MinorSeventh,
        ];
 
     public static readonly List<Fraction> MajorChordFractions = [
