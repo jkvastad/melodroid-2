@@ -40,7 +40,7 @@ public class Program
 
     static void Main(string[] args)
     {
-        List<Fraction> FractionsToSweep = MinorChordFractions;
+        List<Fraction> FractionsToSweep = MajorChordFractions;
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = MaximumBinRadius;
         double sweepStep = 0.001;

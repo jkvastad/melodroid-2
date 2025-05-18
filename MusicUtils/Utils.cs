@@ -24,4 +24,21 @@ public static class Utils
     {
         return b == 0 ? a : GCD(b, a % b);
     }
+
+    public static List<List<T>> GetPowerSet<T>(T[] array)
+    {
+        List<List<T>> powerSet = [[]]; // Start with the empty set
+
+        foreach (T element in array)
+        {
+            int count = powerSet.Count;
+            for (int i = 0; i < count; i++)
+            {
+                List<T> subset = new(powerSet[i]) { element };
+                powerSet.Add(subset);
+            }
+        }
+
+        return powerSet;
+    }
 }
