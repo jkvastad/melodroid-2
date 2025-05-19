@@ -31,7 +31,7 @@ public class TonalCoverageCalculator
     {
         OriginalRatios = new(originalRatios);
         RatioPowerSet = GetPowerSet(originalRatios.ToArray()).Select(subset => new HashSet<double>(subset)).ToList();
-        
+
         // 1. Check all pairs of power set subsets whose union is the original ratio set, without repetition
         // 2. For each such pair, compare their partial tonal coverages
         // 3. Per fundamental, create the pairs (ratioSet1, fractionSet1), (ratioSet2, fractionSet2), LCM, common factor (the tonal coverage)
@@ -140,15 +140,15 @@ public class TonalCoverageCalculator
 
         public override string ToString()
         {
+
             var sb = new StringBuilder();
             sb.Append($"{Fundamental,-3:F1}: ");
+            sb.Append($"{CommonLCMFactor} ");
             for (int i = 0; i < RatioSubsets.Count; i++)
-            {
-                sb.Append($"({string.Join(" ", RatioSubsets[i])}), ");
-                sb.Append($"({string.Join(" ", FractionSubsets[i])}), ");
+            {                
+                sb.Append($"({string.Join(" ", FractionSubsets[i])}) ");
                 sb.Append($"{string.Join(" ", FractionLCMs[i])} ");
             }
-            sb.Append($"{CommonLCMFactor}");
             return sb.ToString();
         }
     }

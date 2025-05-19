@@ -51,9 +51,16 @@ public class Program
                 Console.Write($"({string.Join(" ", set.Select(n => n.ToString("F1")))})");
             }
             Console.WriteLine();
+            string previousLine = "";
             foreach (var tonalCoverage in tonalCoverageCalculator.TonalCoverages[setPair])
             {
-                Console.WriteLine($"{tonalCoverage}");
+                if (tonalCoverage.ToString() != previousLine)
+                {
+                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 15))
+                        continue;
+                    Console.WriteLine($"{tonalCoverage}");
+                    previousLine = tonalCoverage.ToString();
+                }
             }
         }
 
