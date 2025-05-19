@@ -17,7 +17,7 @@ public class OctaveSweep
     public double ClusterWidth { get; } // Percentage around cluster target where ratio is clustered
     public double SweepStepSize { get; } = 0.01; // The ratio increment size for the fundamental when sweeping
     public List<SweepData> OctaveSweepData { get; } = [];
-    public OctaveSweep(List<double> ratiosToSweep, List<Fraction> clusterTargets, double clusterWidth, double sweepStep)
+    public OctaveSweep(HashSet<double> ratiosToSweep, List<Fraction> clusterTargets, double clusterWidth, double sweepStep, bool sanityCheck = false)
     {
         RatiosToSweep = [.. ratiosToSweep.Order()];
         ClusterTargets = [.. clusterTargets.OrderBy(fraction => fraction.ToDouble())];
@@ -25,7 +25,8 @@ public class OctaveSweep
         SweepStepSize = sweepStep;
 
         List<(double lower, double upper)> clusterRanges = CalculateClusterRanges(ClusterTargets, ClusterWidth);
-        SanityCheckClusterWidthToClusterTargets(clusterRanges);
+        if (sanityCheck)
+            SanityCheckClusterWidthToClusterTargets(clusterRanges);
 
         double fundamental = 1.0;
         while (fundamental < 2)
@@ -57,7 +58,7 @@ public class OctaveSweep
         }
 
         return clusterRanges;
-    }    
+    }
 
     /// <summary>
     /// SweepData represents the result of an octave sweep step.

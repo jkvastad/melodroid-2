@@ -41,4 +41,27 @@ public static class Utils
 
         return powerSet;
     }
+
+    public static List<int> Factorise(int integer, int maxLoops = 100)
+    {
+        List<int> factors = new();
+        int factor = 2;
+        int loops = 0;
+        while (integer != 1)
+        {
+            if (integer % factor == 0)
+            {
+                factors.Add(factor);
+                integer /= factor;
+            }
+            else
+            {
+                factor += 1;
+            }
+            loops++;
+            if (loops > maxLoops) throw new ArgumentException($"Factorisation failed - exceeded maxLoops {maxLoops}");
+        }
+        return factors.Count == 0 ? new() { 1 } : factors;
+    }
+
 }
