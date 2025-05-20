@@ -10,31 +10,33 @@ public static class MusicTheory
     public static readonly Fraction MinorThird = new Fraction(6, 5);
     public static readonly Fraction MajorThird = new Fraction(5, 4);
     public static readonly Fraction PerfectFourth = new Fraction(4, 3);
-    public static readonly Fraction Tritone = new Fraction(7, 5);
+    //public static readonly Fraction Tritone = new Fraction(7, 5);
+    public static readonly double Tritone = 1.41421356237; //sqrt(2)
     public static readonly Fraction PerfectFifth = new Fraction(3, 2);
     public static readonly Fraction MinorSixth = new Fraction(8, 5);
     public static readonly Fraction MajorSixth = new Fraction(5, 3);
     public static readonly Fraction MinorSeventh = new Fraction(9, 5);
     public static readonly Fraction MajorSeventh = new Fraction(15, 8);
+    public static readonly Fraction Octave = new Fraction(2);
 
     // Complete Good Fractions
     public static readonly Fraction SubMajorSecond = new Fraction(10, 9);
     public static readonly Fraction SubMinorSeventh = new Fraction(16, 9);
 
     // Common fraction sets
-    public static readonly List<Fraction> TET12Fractions = [
-        Unison,
-        MinorSecond,
-        MajorSecond,
-        MinorThird,
-        MajorThird,
-        PerfectFourth,
+    public static readonly List<double> TET12Fractions = [
+        (double)Unison,
+        (double)MinorSecond,
+        (double)MajorSecond,
+        (double)MinorThird,
+        (double)MajorThird,
+        (double)PerfectFourth,
         Tritone,
-        PerfectFifth,
-        MinorSixth,
-        MajorSixth,
-        MinorSeventh,
-        MajorSeventh
+        (double)PerfectFifth,
+        (double)MinorSixth,
+        (double)MajorSixth,
+        (double)MinorSeventh,
+        (double)MajorSeventh
     ];
 
     public static readonly List<Fraction> GoodFractions = [
@@ -50,7 +52,8 @@ public static class MusicTheory
         MajorSixth,
         SubMinorSeventh,
         MinorSeventh,
-        MajorSeventh
+        MajorSeventh,
+        Octave
     ];
 
     // Minor seventh
@@ -101,9 +104,9 @@ public static class MusicTheory
         MinorThird,
         PerfectFifth
         ];
-    public static readonly List<Fraction> DimChordFractions = [
-        Unison,
-        MinorThird,
+    public static readonly List<double> DimChordFractions = [
+        (double)Unison,
+        (double)MinorThird,
         Tritone
         ];
 

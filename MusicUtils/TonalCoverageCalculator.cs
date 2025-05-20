@@ -24,11 +24,12 @@ public class TonalCoverageCalculator
     public HashSet<double> OriginalRatios { get; set; }
     public List<HashSet<double>> RatioPowerSet { get; set; }
     public List<Fraction> ClusterTargets { get; set; } = GoodFractions;
-    public double ClusterWidth = MaximumBinRadius;
+    public double ClusterWidth;
     public double SweepStep = 0.001;
     public Dictionary<HashSet<HashSet<double>>, List<TonalCoverage>> TonalCoverages = new(new SetOfSetComparer<double>());
-    public TonalCoverageCalculator(List<double> originalRatios)
+    public TonalCoverageCalculator(List<double> originalRatios, double clusterWidth = MaximumBinRadius)
     {
+        ClusterWidth = clusterWidth;
         OriginalRatios = new(originalRatios);
         RatioPowerSet =
             GetPowerSet(originalRatios.ToArray()).Select(subset => new HashSet<double>(subset))
@@ -156,8 +157,7 @@ public class TonalCoverageCalculator
             var powerSetSubsets = new StringBuilder();
             foreach (var set in setPair)
             {
-                powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");
-                //powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString("F2")))})");                
+                powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");                         
             }
             rowBatch.Add(powerSetSubsets.ToString());
 

@@ -32,19 +32,19 @@ public class Program
         MinorSixth,
         MajorSixth,
     ];
-    public static readonly List<Fraction> MinorChord_Tritone = [
-        Unison,
-        MinorThird,
+    public static readonly List<double> MinorChord_Tritone = [
+        (double)Unison,
+        (double)MinorThird,
         Tritone,
-        PerfectFifth,
+        (double)PerfectFifth,
     ];
 
 
     static void Main(string[] args)
     {
         // Tonal Coverage Test
-        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorSeventhChord.Select(fraction => (double)fraction).ToList());
-        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3,1))
+        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorChord_Tritone, clusterWidth: 0.01);
+        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2))
             Console.WriteLine(consoleRow);
 
 
