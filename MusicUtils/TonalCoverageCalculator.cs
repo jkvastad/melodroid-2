@@ -146,7 +146,11 @@ public class TonalCoverageCalculator
     /// </summary>
     /// <param name="fractionMatchMinSize"> The minimum size for a fraction match, e.g. set it to 3 for only comparing triad or larger matches</param>
     /// <returns></returns>
-    public List<string> GetConsoleOutput(int fractionMatchMinSize = 1, int fundamentalDecimalsDisplayed = 2, int ratioSetDecimalsDisplayed = 2)
+    public List<string> GetConsoleOutput(
+        int fractionMatchMinSize = 1,
+        int fundamentalDecimalsDisplayed = 2,
+        int ratioSetDecimalsDisplayed = 2,
+        double printThreshold = 0.11)
     {
         List<string> consoleRows = [];
         string format = "F" + ratioSetDecimalsDisplayed;
@@ -157,11 +161,12 @@ public class TonalCoverageCalculator
             var powerSetSubsets = new StringBuilder();
             foreach (var set in setPair)
             {
-                powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");                         
+                powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");
             }
             rowBatch.Add(powerSetSubsets.ToString());
 
             string previousLine = "";
+            double previousFundamental = 0;
             foreach (var tonalCoverage in TonalCoverages[setPair])
             {
                 // Only print matches of sufficient size
@@ -179,11 +184,18 @@ public class TonalCoverageCalculator
                 tonalCoverage.StringDecimalPlaces = fundamentalDecimalsDisplayed;
                 if (tonalCoverage.ToString() != previousLine)
                 {
+                    //Only print if fundamental diff is above threshold from last printed line
+                    if (Math.Abs(tonalCoverage.Fundamental - previousFundamental) < printThreshold)
+                    {
+                        continue;
+                    }
+
                     // Only print lcm of reasonable size
                     if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 15))
                         continue;
 
                     rowBatch.Add($"{tonalCoverage}");
+                    previousFundamental = tonalCoverage.Fundamental;
                     previousLine = tonalCoverage.ToString();
                 }
             }

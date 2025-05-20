@@ -38,12 +38,18 @@ public class Program
         Tritone,
         (double)PerfectFifth,
     ];
+    public static readonly List<double> MinorChord_PerfectFourth = [
+        (double)Unison,
+        (double)MinorThird,
+        (double)PerfectFourth,
+        (double)PerfectFifth,
+    ];
 
 
     static void Main(string[] args)
     {
         // Tonal Coverage Test
-        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorChord_Tritone, clusterWidth: 0.01);
+        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorChord_PerfectFourth, clusterWidth: 0.01);
         foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2))
             Console.WriteLine(consoleRow);
 
