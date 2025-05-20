@@ -26,11 +26,14 @@ public class TonalCoverageCalculator
     public List<Fraction> ClusterTargets { get; set; } = GoodFractions;
     public double ClusterWidth = MaximumBinRadius;
     public double SweepStep = 0.001;
-    public Dictionary<HashSet<HashSet<double>>, List<TonalCoverage>> TonalCoverages = new(new SetOfSetComparer());
+    public Dictionary<HashSet<HashSet<double>>, List<TonalCoverage>> TonalCoverages = new(new SetOfSetComparer<double>());
     public TonalCoverageCalculator(List<double> originalRatios)
     {
         OriginalRatios = new(originalRatios);
-        RatioPowerSet = GetPowerSet(originalRatios.ToArray()).Select(subset => new HashSet<double>(subset)).ToList();
+        RatioPowerSet =
+            GetPowerSet(originalRatios.ToArray()).Select(subset => new HashSet<double>(subset))
+            .Where(set => set.Count > 0)
+            .ToList();
 
         // 1. Check all pairs of power set subsets whose union is the original ratio set, without repetition
         // 2. For each such pair, compare their partial tonal coverages
@@ -67,44 +70,6 @@ public class TonalCoverageCalculator
         }
     }
 
-    // Comparers for sets of sets, useful when calculating tonal coverages
-    class DoubleSetComparer : IEqualityComparer<HashSet<double>>
-    {
-        public bool Equals(HashSet<double> x, HashSet<double> y)
-        {
-            return x.SetEquals(y);
-        }
-
-        public int GetHashCode(HashSet<double> obj)
-        {
-            int hash = 0;
-            foreach (var item in obj)
-                hash ^= item.GetHashCode(); // or use a better combination strategy
-            return hash;
-        }
-    }
-
-    class SetOfSetComparer : IEqualityComparer<HashSet<HashSet<double>>>
-    {
-        private readonly DoubleSetComparer _innerComparer = new DoubleSetComparer();
-
-        public bool Equals(HashSet<HashSet<double>> x, HashSet<HashSet<double>> y)
-        {
-            if (x.Count != y.Count)
-                return false;
-
-            return x.All(xs => y.Any(ys => _innerComparer.Equals(xs, ys)));
-        }
-
-        public int GetHashCode(HashSet<HashSet<double>> obj)
-        {
-            int hash = 0;
-            foreach (var innerSet in obj)
-                hash ^= _innerComparer.GetHashCode(innerSet);
-            return hash;
-        }
-    }
-
     /// A tonal coverage consists of:
     ///     * An original set of ratios
     ///     * Two sets of fractions (binned from subsets of the ratios whose union is the original ratio set)
@@ -119,6 +84,7 @@ public class TonalCoverageCalculator
         public List<List<Fraction>> FractionSubsets { get; }
         public List<int> FractionLCMs { get; }
         public int CommonLCMFactor { get; }
+        public int StringDecimalPlaces { get; set; } = 2;
 
         public TonalCoverage(PartialTonalCoverage partial1, PartialTonalCoverage partial2)
         {
@@ -142,10 +108,11 @@ public class TonalCoverageCalculator
         {
 
             var sb = new StringBuilder();
-            sb.Append($"{Fundamental,-3:F1}: ");
+            string format = $"{{0,-3:F{StringDecimalPlaces}}}: ";
+            sb.Append(string.Format(format, Fundamental));
             sb.Append($"{CommonLCMFactor} ");
             for (int i = 0; i < RatioSubsets.Count; i++)
-            {                
+            {
                 sb.Append($"({string.Join(" ", FractionSubsets[i])}) ");
                 sb.Append($"{string.Join(" ", FractionLCMs[i])} ");
             }
@@ -172,5 +139,61 @@ public class TonalCoverageCalculator
             Lcm = (int)LCM(ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
             LcmPrimes = new List<int>(Factorise(Lcm));
         }
+    }
+    /// <summary>
+    /// Gets printable version of tonal coverages
+    /// </summary>
+    /// <param name="fractionMatchMinSize"> The minimum size for a fraction match, e.g. set it to 3 for only comparing triad or larger matches</param>
+    /// <returns></returns>
+    public List<string> GetConsoleOutput(int fractionMatchMinSize = 1, int decimalsDisplayed = 2)
+    {
+        List<string> consoleRows = [];
+        string format = "F" + decimalsDisplayed;
+
+        foreach (var setPair in TonalCoverages.Keys)
+        {
+            List<string> rowBatch = [];
+            var powerSetSubsets = new StringBuilder();
+            foreach (var set in setPair)
+            {
+                powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");
+                //powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString("F2")))})");                
+            }
+            rowBatch.Add(powerSetSubsets.ToString());
+
+            string previousLine = "";
+            foreach (var tonalCoverage in TonalCoverages[setPair])
+            {
+                // Only print matches of sufficient size
+                if (tonalCoverage.FractionSubsets.Any(subset => subset.Count < fractionMatchMinSize))
+                    continue;
+
+                // Only print distinct subsets
+                HashSet<HashSet<Fraction>> uniqueFractionSets = new(new SetComparer<Fraction>());
+                foreach (var fractionSet in tonalCoverage.FractionSubsets)
+                    uniqueFractionSets.Add(new(fractionSet));
+                if (uniqueFractionSets.Count != tonalCoverage.FractionSubsets.Count)
+                    continue;
+
+                // Only print unique lines
+                tonalCoverage.StringDecimalPlaces = decimalsDisplayed;
+                if (tonalCoverage.ToString() != previousLine)
+                {
+                    // Only print lcm of reasonable size
+                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 15))
+                        continue;
+
+                    rowBatch.Add($"{tonalCoverage}");
+                    previousLine = tonalCoverage.ToString();
+                }
+            }
+            // Only print sets with interesting matches
+            if (previousLine != "")
+            {
+                rowBatch.Add("");
+                consoleRows.AddRange(rowBatch);
+            }
+        }
+        return consoleRows;
     }
 }

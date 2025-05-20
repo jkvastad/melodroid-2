@@ -43,26 +43,10 @@ public class Program
     static void Main(string[] args)
     {
         // Tonal Coverage Test
-        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorChord_Tritone.Select(fraction => (double)fraction).ToList());
-        foreach (var setPair in tonalCoverageCalculator.TonalCoverages.Keys)
-        {
-            foreach (var set in setPair)
-            {
-                Console.Write($"({string.Join(" ", set.Select(n => n.ToString("F1")))})");
-            }
-            Console.WriteLine();
-            string previousLine = "";
-            foreach (var tonalCoverage in tonalCoverageCalculator.TonalCoverages[setPair])
-            {
-                if (tonalCoverage.ToString() != previousLine)
-                {
-                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 15))
-                        continue;
-                    Console.WriteLine($"{tonalCoverage}");
-                    previousLine = tonalCoverage.ToString();
-                }
-            }
-        }
+        var tonalCoverageCalculator = new TonalCoverageCalculator(MinorSeventhChord.Select(fraction => (double)fraction).ToList());
+        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3,1))
+            Console.WriteLine(consoleRow);
+
 
         // Octave Sweep Test -- move data printing to octave sweep class?
         //List<Fraction> FractionsToSweep = MajorChordFractions;

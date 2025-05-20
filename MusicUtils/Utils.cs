@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,4 +65,42 @@ public static class Utils
         return factors.Count == 0 ? new() { 1 } : factors;
     }
 
+    // Compares sets, useful when calculating e.g. tonal coverages
+    public class SetComparer<T> : IEqualityComparer<HashSet<T>>
+    {
+        public bool Equals(HashSet<T> x, HashSet<T> y)
+        {
+            return x.SetEquals(y);
+        }
+
+        public int GetHashCode(HashSet<T> obj)
+        {
+            int hash = 0;
+            foreach (var item in obj)
+                hash ^= item.GetHashCode(); // or use a better combination strategy
+            return hash;
+        }
+    }
+
+    // Comparers for sets of sets, useful when calculating tonal coverages
+    public class SetOfSetComparer<T> : IEqualityComparer<HashSet<HashSet<T>>>
+    {
+        private readonly SetComparer<T> _innerComparer = new();
+
+        public bool Equals(HashSet<HashSet<T>> x, HashSet<HashSet<T>> y)
+        {
+            if (x.Count != y.Count)
+                return false;
+
+            return x.All(xs => y.Any(ys => _innerComparer.Equals(xs, ys)));
+        }
+
+        public int GetHashCode(HashSet<HashSet<T>> obj)
+        {
+            int hash = 0;
+            foreach (var innerSet in obj)
+                hash ^= _innerComparer.GetHashCode(innerSet);
+            return hash;
+        }
+    }
 }

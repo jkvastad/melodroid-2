@@ -36,7 +36,7 @@ public static class MusicTheory
         MinorSeventh,
         MajorSeventh
     ];
-    
+
     public static readonly List<Fraction> GoodFractions = [
         Unison,
         MinorSecond,
@@ -53,6 +53,14 @@ public static class MusicTheory
         MajorSeventh
     ];
 
+    // Minor seventh
+    public static readonly List<Fraction> MinorSeventhChord = [
+        Unison,
+        MajorThird,
+        PerfectFifth,
+        MinorSeventh
+       ];
+
     // A major ninth
     public static readonly List<Fraction> LCM8 = [
         Unison,
@@ -66,19 +74,19 @@ public static class MusicTheory
     public static readonly List<Fraction> LCM15 = [
         Unison,
         MinorSecond,
-        MinorThird,        
+        MinorThird,
         PerfectFourth,
         MinorSixth,
         MajorSixth,
         MinorSeventh
        ];
-    
+
     // A minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
     public static readonly List<Fraction> MinorEleventhChord = [
         Unison,
         MajorSecond,
         MinorThird,
-        PerfectFourth,        
+        PerfectFourth,
         PerfectFifth,
         MinorSeventh
        ];
