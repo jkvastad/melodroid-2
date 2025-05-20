@@ -145,10 +145,10 @@ public class TonalCoverageCalculator
     /// </summary>
     /// <param name="fractionMatchMinSize"> The minimum size for a fraction match, e.g. set it to 3 for only comparing triad or larger matches</param>
     /// <returns></returns>
-    public List<string> GetConsoleOutput(int fractionMatchMinSize = 1, int decimalsDisplayed = 2)
+    public List<string> GetConsoleOutput(int fractionMatchMinSize = 1, int fundamentalDecimalsDisplayed = 2, int ratioSetDecimalsDisplayed = 2)
     {
         List<string> consoleRows = [];
-        string format = "F" + decimalsDisplayed;
+        string format = "F" + ratioSetDecimalsDisplayed;
 
         foreach (var setPair in TonalCoverages.Keys)
         {
@@ -176,7 +176,7 @@ public class TonalCoverageCalculator
                     continue;
 
                 // Only print unique lines
-                tonalCoverage.StringDecimalPlaces = decimalsDisplayed;
+                tonalCoverage.StringDecimalPlaces = fundamentalDecimalsDisplayed;
                 if (tonalCoverage.ToString() != previousLine)
                 {
                     // Only print lcm of reasonable size
