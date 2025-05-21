@@ -1,4 +1,6 @@
 ﻿using Fractions;
+using System.Text;
+using static Melodroid_2.MusicUtils.Utils;
 
 namespace Melodroid_2.MusicUtils;
 /// <summary>
@@ -109,5 +111,57 @@ public class OctaveSweep
                 }
             }
         }
+    }
+
+    public List<string> GetConsoleOutput()
+    {
+        var consoleRows = new List<string>();
+        StringBuilder header = new();
+        // Write header        
+        header.Append($"      ");
+        foreach (Fraction target in ClusterTargets)
+            header.Append($"{target,-5} ");
+        header.Append($"{"LCM",-5}");
+        header.Append($"{"Hits",-5}");
+        header.AppendLine();
+        consoleRows.Add(header.ToString());
+
+        // Write data
+        Dictionary<Fraction, double> previousRow = [];
+        foreach (var sweepData in OctaveSweepData)
+        {
+            StringBuilder consoleRow = new();
+            // Skip line if empty
+            if (sweepData.ClusterTargetMatches.Count == 0)
+                continue;
+
+            // Create row to print
+            Dictionary<Fraction, double> currentRow = []; // Target keys, ratio sweep value
+            foreach (double targetRatio in sweepData.ClusterTargetMatches.Keys)
+                currentRow[sweepData.ClusterTargetMatches[targetRatio]] = targetRatio;
+
+            // Skip row if identical to last
+            if (currentRow.Keys.SequenceEqual(previousRow.Keys))
+                continue;
+
+            // Print row
+            double fundamental = sweepData.Fundamental;
+            consoleRow.Append($"{fundamental,-4:F2}: ");
+            foreach (Fraction target in ClusterTargets)
+            {
+                if (currentRow.ContainsKey(target))
+                    consoleRow.Append($"{target.ToString(),-5:F1} ");
+                else
+                    consoleRow.Append("      ");
+            }
+            var lcm = LCM(sweepData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());            
+            consoleRow.Append($"{lcm,-5}");
+            consoleRow.Append($"{sweepData.ClusterTargetMatches.Count(),-5}");            
+            consoleRows.Add(consoleRow.ToString());
+
+            previousRow = currentRow;
+        }
+
+        return consoleRows;
     }
 }
