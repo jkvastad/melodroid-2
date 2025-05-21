@@ -54,10 +54,11 @@ public class Program
 
     static void Main(string[] args)
     {
-        // Tonal Coverage Test
-        // TODO: seems like LCM 8 is not detected inside of LCM 15? Should occur at 1.06?
+        // Tonal Coverage Test        
         //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => fraction.ToDouble()).ToList();
+        //List<Fraction> FractionsToSweep = AugmentedChord;
+        //List<double> FractionsToSweep = AugmentedChord;
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
         //var tonalCoverageCalculator = new TonalCoverageCalculator(
         //    ratiosToSweep,
         //    clusterWidth: 0.01);
@@ -66,11 +67,13 @@ public class Program
 
 
         // Octave Sweep Test
-        List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
+        //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
+        //List<Fraction> FractionsToSweep = LCM20;
+        List<double> FractionsToSweep = DimChord;
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = 0.01;
         double sweepStep = 0.001;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => fraction.ToDouble()).ToHashSet();
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
         OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
         foreach (var consoleRow in sweep.GetConsoleOutput())
             Console.WriteLine(consoleRow);

@@ -83,6 +83,14 @@ public static class MusicTheory
         MajorSixth,
         MinorSeventh
        ];
+    public static readonly List<Fraction> LCM20 = [
+        Unison,        
+        MinorThird,
+        MajorThird,
+        PerfectFifth,
+        MinorSixth,        
+        MinorSeventh
+       ];
 
     // A minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
     public static readonly List<Fraction> MinorEleventhChord = [
@@ -104,10 +112,21 @@ public static class MusicTheory
         MinorThird,
         PerfectFifth
         ];
-    public static readonly List<double> DimChordFractions = [
+    public static readonly List<double> DimChord = [
         (double)Unison,
         (double)MinorThird,
         Tritone
+        ];
+    public static readonly List<double> DimChord7 = [
+        (double)Unison,
+        (double)MinorThird,
+        Tritone,
+        (double)MajorSixth
+        ];
+    public static readonly List<double> AugmentedChord = [
+        (double)Unison,
+        (double)MajorThird,
+        (double)MinorSixth
         ];
 
     // Just-Noticeable-Difference: https://en.wikipedia.org/wiki/Just-noticeable_difference
