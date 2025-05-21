@@ -102,6 +102,17 @@ public static class MusicTheory
         MinorSeventh
        ];
 
+    // C Major Scale is the same as G13
+    public static readonly List<Fraction> MajorScale = [
+        Unison,
+        MajorSecond,
+        MajorThird,
+        PerfectFourth,
+        PerfectFifth,
+        MajorSixth,
+        MajorSeventh
+       ];
+
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,
         MajorThird,

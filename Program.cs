@@ -55,14 +55,14 @@ public class Program
     static void Main(string[] args)
     {
         // Chord Crogression Test
-        var originRatios = MajorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
-        var keyOffset = PerfectFourth;
-        var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
-        ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.01);
-        foreach (var consoleRow in chordProgression.GetConsoleOutput())
-        {
-            Console.WriteLine(consoleRow);
-        }
+        //var originRatios = MajorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
+        //var keyOffset = PerfectFourth;
+        //var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        //ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.01);
+        //foreach (var consoleRow in chordProgression.GetConsoleOutput())
+        //{
+        //    Console.WriteLine(consoleRow);
+        //}
 
         // Tonal Coverage Test        
         //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
@@ -78,15 +78,15 @@ public class Program
 
         // Octave Sweep Test
         //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
-        //List<Fraction> FractionsToSweep = LCM20;
+        List<Fraction> FractionsToSweep = MajorScale;
         //List<double> FractionsToSweep = DimChord;
-        //List<Fraction> ClusterTargets = GoodFractions;
-        //double clusterWidth = 0.01;
-        //double sweepStep = 0.001;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        //foreach (var consoleRow in sweep.GetConsoleOutput())
-        //    Console.WriteLine(consoleRow);
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = 0.01;
+        double sweepStep = 0.001;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        foreach (var consoleRow in sweep.GetConsoleOutput())
+            Console.WriteLine(consoleRow);
 
     }
 }
