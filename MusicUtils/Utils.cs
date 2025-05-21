@@ -103,4 +103,23 @@ public static class Utils
             return hash;
         }
     }
+
+    /// <summary>
+    /// Returns the common factor of two sets of primes. 0 if no common factor.
+    /// </summary>
+    /// <param name="primes1"></param>
+    /// <param name="primes2"></param>
+    /// <returns></returns>
+    public static int CommonFactors(List<int> primes1, List<int> primes2)
+    {
+        int CommonFactor = 0;
+        List<int> commonPrimes = [];
+        foreach (var prime1 in primes1)
+            if (primes2.Contains(prime1))
+                commonPrimes.Add(prime1);
+        if (commonPrimes.Count > 0)
+            CommonFactor = commonPrimes.Aggregate((a, b) => a * b);
+        
+        return CommonFactor;
+    }
 }

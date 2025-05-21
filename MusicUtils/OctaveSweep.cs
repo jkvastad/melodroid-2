@@ -17,9 +17,9 @@ public class OctaveSweep
     public List<double> RatiosToSweep { get; set; } = [];
     public List<Fraction> ClusterTargets { get; set; } // The ideal fractions (notes) to which real ratios cluster
     public double ClusterWidth { get; } // Percentage around cluster target where ratio is clustered
-    public double SweepStepSize { get; } = 0.01; // The ratio increment size for the fundamental when sweeping
+    public double SweepStepSize { get; } // The ratio increment size for the fundamental when sweeping
     public List<SweepData> OctaveSweepData { get; } = [];
-    public OctaveSweep(HashSet<double> ratiosToSweep, List<Fraction> clusterTargets, double clusterWidth, double sweepStep, bool sanityCheck = false)
+    public OctaveSweep(HashSet<double> ratiosToSweep, List<Fraction> clusterTargets, double clusterWidth, double sweepStep = 0.01, bool sanityCheck = false)
     {
         RatiosToSweep = [.. ratiosToSweep.Order()];
         ClusterTargets = [.. clusterTargets.OrderBy(fraction => fraction.ToDouble())];

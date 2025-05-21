@@ -95,14 +95,7 @@ public class TonalCoverageCalculator
             FractionSubsets = [[.. partial1.ClusterTargetMatches.Values], [.. partial2.ClusterTargetMatches.Values]];
             FractionLCMs = [partial1.Lcm, partial2.Lcm];
 
-            List<int> primes = [];
-            foreach (var prime1 in partial1.LcmPrimes)
-                if (partial2.LcmPrimes.Contains(prime1))
-                    primes.Add(prime1);
-            if (primes.Count > 0)
-                CommonLCMFactor = primes.Aggregate((a, b) => a * b);
-            else
-                CommonLCMFactor = 0;
+            CommonLCMFactor = CommonFactors(partial1.LcmPrimes, partial2.LcmPrimes);            
         }
 
         public override string ToString()
