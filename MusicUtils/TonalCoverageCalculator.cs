@@ -184,7 +184,7 @@ public class TonalCoverageCalculator
                     }
 
                     // Only print lcm of reasonable size
-                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 15))
+                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 24))
                         continue;
 
                     rowBatch.Add($"{tonalCoverage}");

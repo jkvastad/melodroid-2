@@ -51,6 +51,42 @@ public class Program
         Tritone,
     ];
 
+    public static readonly List<double> MajorScaleAtNote8 = [
+        (double)Unison,
+        (double)MinorSecond,
+        (double)MinorThird,
+        (double)PerfectFourth,
+        (double)PerfectFifth,
+        (double)PerfectFifth,
+        (double)MinorSixth,
+        (double)MinorSeventh
+    ];
+    public static readonly List<double> MyNotes = [
+        (double)Unison,
+        (double)MinorSecond,
+        (double)MinorThird,
+        (double)PerfectFourth,                
+        (double)MajorSixth,
+        (double)MinorSeventh
+    ];
+    public static readonly List<double> MyNotes2 = [
+        (double)Unison,
+        (double)MinorSecond,
+        (double)MinorThird,
+        (double)PerfectFourth,                
+        (double)MinorSixth,
+        (double)MajorSixth,
+        (double)MinorSeventh
+    ];
+    public static readonly List<double> MyNotes3 = [
+        (double)Unison,       
+        (double)MinorThird,
+        (double)PerfectFourth,                
+        (double)MajorSixth,
+        (double)Tritone,
+        //(double)MinorSeventh
+    ];
+
 
     static void Main(string[] args)
     {
@@ -64,22 +100,18 @@ public class Program
         //    Console.WriteLine(consoleRow);
         //}
 
-        // Tonal Coverage Test        
-        //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
-        //List<Fraction> FractionsToSweep = AugmentedChord;
-        //List<double> FractionsToSweep = AugmentedChord;
+        // Tonal Coverage Test                
+        //var  FractionsToSweep = MyNotes3;        
         //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
         //var tonalCoverageCalculator = new TonalCoverageCalculator(
         //    ratiosToSweep,
         //    clusterWidth: 0.01);
-        //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(5, 2))
+        //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2))
         //    Console.WriteLine(consoleRow);
 
 
-        // Octave Sweep Test
-        //List<Fraction> FractionsToSweep = LCM15.Except([MajorSixth]).ToList();
-        List<Fraction> FractionsToSweep = MajorScale;
-        //List<double> FractionsToSweep = DimChord;
+        // Octave Sweep Test        
+        var FractionsToSweep = MyNotes;
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = 0.01;
         double sweepStep = 0.001;
