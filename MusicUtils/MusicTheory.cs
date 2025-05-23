@@ -55,6 +55,21 @@ public static class MusicTheory
         MajorSeventh,
         Octave
     ];
+    
+    public static readonly List<Fraction> GoodFractionsNo9 = [
+        Unison,
+        MinorSecond,        
+        MajorSecond,
+        MinorThird,
+        MajorThird,
+        PerfectFourth,
+        PerfectFifth,
+        MinorSixth,
+        MajorSixth,        
+        MinorSeventh,
+        MajorSeventh,
+        Octave
+    ];
 
     // Minor seventh
     public static readonly List<Fraction> MinorSeventhChord = [
@@ -91,6 +106,38 @@ public static class MusicTheory
         MinorSixth,        
         MinorSeventh
        ];
+    
+    // A.K.A. C Major Scale A.K.A. G13
+    public static readonly List<Fraction> LCM24 = [
+        Unison,
+        MajorSecond,
+        MajorThird,
+        PerfectFourth,
+        PerfectFifth,
+        MajorSixth,
+        MajorSeventh
+       ];
+
+    // LCM24 but played as perfect fourths - C# Major scale
+    public static readonly List<double> LCM24PerfectFourths = new List<double>() {
+            (double)Unison,
+            (double)PerfectFourth,
+            (double)MinorSeventh,
+            (double)MinorThird,
+            (double)MinorSixth,
+            (double)MinorSecond,
+            Tritone};
+    
+    // LCM24 but played as perfect fifths - G Major scale
+    public static readonly List<double> LCM24PerfectFifths = new List<double>() {
+            (double)Unison,
+            (double)PerfectFifth,
+            (double)MajorSecond,
+            (double)MajorSixth,
+            (double)MajorThird,
+            (double)MajorSeventh,
+            Tritone};
+
 
     // A minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
     public static readonly List<Fraction> MinorEleventhChord = [
@@ -102,16 +149,7 @@ public static class MusicTheory
         MinorSeventh
        ];
 
-    // C Major Scale is the same as G13
-    public static readonly List<Fraction> MajorScale = [
-        Unison,
-        MajorSecond,
-        MajorThird,
-        PerfectFourth,
-        PerfectFifth,
-        MajorSixth,
-        MajorSeventh
-       ];
+    
 
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,

@@ -114,11 +114,8 @@ public class Program
         var FractionsToSweep = new List<double>() {
             (double)Unison,
             (double)PerfectFourth,
-            (double)MinorSeventh,
-            (double)MinorThird,
-            (double)MinorSixth,
-            (double)MinorSecond,
-            Tritone};
+            (double)MinorSeventh
+        };
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = 0.01;
         double sweepStep = 0.001;
