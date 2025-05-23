@@ -29,9 +29,13 @@ public class ChordProgression
         _targetSweep = new(targetRatios, ClusterTargets, ClusterWidth);
     }
 
-    public List<string> GetConsoleOutput()
+    public List<string> GetConsoleOutput(int minOriginFractionMatches = 1, int minTargetFractionMatches = 1)
     {
         var consoleRows = new List<string>();
+        // Write input
+        consoleRows.Add(string.Join(" ", _originSweep.RatiosToSweep));
+        consoleRows.Add(string.Join(" ", _targetSweep.RatiosToSweep));
+
         StringBuilder header = new();
         // Write header        
         header.Append($"root  ");
@@ -51,6 +55,11 @@ public class ChordProgression
 
             // Skip if no match on either data
             if (originData.ClusterTargetMatches.Keys.Count == 0 || targetData.ClusterTargetMatches.Keys.Count == 0)
+                continue;
+
+            // Skip if no sufficiently large matches
+            if (originData.ClusterTargetMatches.Keys.Count < minOriginFractionMatches
+                || targetData.ClusterTargetMatches.Keys.Count < minTargetFractionMatches)
                 continue;
 
             int originLCM = (int)LCM(originData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());

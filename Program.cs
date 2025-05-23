@@ -65,7 +65,7 @@ public class Program
         (double)Unison,
         (double)MinorSecond,
         (double)MinorThird,
-        (double)PerfectFourth,                
+        (double)PerfectFourth,
         (double)MajorSixth,
         (double)MinorSeventh
     ];
@@ -73,15 +73,15 @@ public class Program
         (double)Unison,
         (double)MinorSecond,
         (double)MinorThird,
-        (double)PerfectFourth,                
+        (double)PerfectFourth,
         (double)MinorSixth,
         (double)MajorSixth,
         (double)MinorSeventh
     ];
     public static readonly List<double> MyNotes3 = [
-        (double)Unison,       
+        (double)Unison,
         (double)MinorThird,
-        (double)PerfectFourth,                
+        (double)PerfectFourth,
         (double)MajorSixth,
         (double)Tritone,
         //(double)MinorSeventh
@@ -92,16 +92,16 @@ public class Program
     {
         // Chord Crogression Test
         //var originRatios = MajorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
-        //var keyOffset = PerfectFourth;
-        //var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        //var keyOffset = MajorSeventh;
+        //var targetRatios = MinorSeventhChord.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        ////var keyOffset = PerfectFourth;
+        ////var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
         //ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.01);
-        //foreach (var consoleRow in chordProgression.GetConsoleOutput())
-        //{
+        //foreach (var consoleRow in chordProgression.GetConsoleOutput(3, 3))
         //    Console.WriteLine(consoleRow);
-        //}
 
         // Tonal Coverage Test                
-        //var  FractionsToSweep = MyNotes3;        
+        //var FractionsToSweep = MinorChord_Tritone;
         //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
         //var tonalCoverageCalculator = new TonalCoverageCalculator(
         //    ratiosToSweep,
@@ -111,7 +111,14 @@ public class Program
 
 
         // Octave Sweep Test        
-        var FractionsToSweep = MyNotes;
+        var FractionsToSweep = new List<double>() {
+            (double)Unison,
+            (double)PerfectFourth,
+            (double)MinorSeventh,
+            (double)MinorThird,
+            (double)MinorSixth,
+            (double)MinorSecond,
+            Tritone};
         List<Fraction> ClusterTargets = GoodFractions;
         double clusterWidth = 0.01;
         double sweepStep = 0.001;
