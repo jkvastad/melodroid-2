@@ -88,10 +88,11 @@ public class OctaveSweep
         public void OctaveRenormaliseRatios()
         {
             foreach (var ratio in RatiosToSweep)
-            {
-                //Fundamental is > 1 so only need to normalise new ratio upwards
+            {                
                 double newRatio = ratio / Fundamental;
-                if (newRatio < 1)
+                while (newRatio > 1)
+                    newRatio /= 2;
+                while(newRatio < 1)
                     newRatio *= 2;
                 OctaveRenormalisedRatios.Add(newRatio);
             }

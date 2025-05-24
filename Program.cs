@@ -98,14 +98,14 @@ public class Program
     {
         // Chord Crogression Test 
         // TODO: fix error: Cannot find 12@2 and 15@2 for minor chord@0 -> minor chord @11
-        var originRatios = MinorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
-        var keyOffset = MajorSeventh;
-        var targetRatios = MinorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
-        //var keyOffset = PerfectFourth;
-        //var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
-        ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.01);
-        foreach (var consoleRow in chordProgression.GetConsoleOutput(3, 3))
-            Console.WriteLine(consoleRow);
+        //var originRatios = MinorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
+        //var keyOffset = MajorSeventh;
+        //var targetRatios = MinorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        ////var keyOffset = PerfectFourth;
+        ////var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        //ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.01);
+        //foreach (var consoleRow in chordProgression.GetConsoleOutput(3, 3))
+        //    Console.WriteLine(consoleRow);
 
         // Tonal Coverage Test                
         //var FractionsToSweep = MinorChord_Tritone;
@@ -118,18 +118,21 @@ public class Program
 
 
         // Octave Sweep Test        
-        //var FractionsToSweep = new List<double>() {
-        //    (double)Unison,
-        //    (double)MinorThird,
-        //    (double)PerfectFifth,            
-        //};
-        //List<Fraction> ClusterTargets = GoodFractions;
-        //double clusterWidth = 0.01;
-        //double sweepStep = 0.001;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        //foreach (var consoleRow in sweep.GetConsoleOutput())
-        //    Console.WriteLine(consoleRow);
+        
+        var FractionsToSweep = new List<double>()
+        {
+            (double)Unison,
+            (double)MinorThird,
+            (double)PerfectFifth,
+            (double)MajorThird,
+        };
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = 0.01;
+        double sweepStep = 0.001;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        foreach (var consoleRow in sweep.GetConsoleOutput())
+            Console.WriteLine(consoleRow);
 
     }
 }
