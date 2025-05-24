@@ -148,9 +148,7 @@ public static class MusicTheory
         PerfectFifth,
         MinorSeventh
        ];
-
     
-
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,
         MajorThird,
@@ -159,6 +157,11 @@ public static class MusicTheory
     public static readonly List<Fraction> MinorChordFractions = [
         Unison,
         MinorThird,
+        PerfectFifth
+        ];
+    public static readonly List<Fraction> Sus2ChordFractions = [
+        Unison,
+        MajorSecond,
         PerfectFifth
         ];
     public static readonly List<double> DimChord = [
