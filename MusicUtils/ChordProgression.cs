@@ -6,6 +6,8 @@ namespace Melodroid_2.MusicUtils;
 
 /// <summary>
 /// A chord progression shows if two sets of ratios can cluster to sets of fractions which share LCM factors for a given reference point
+/// - All fundamentals which have sufficiently large origin and target matches are shown 
+/// - Cluster width might need to be calibrated to show some results due to scaling issues
 /// </summary>
 public class ChordProgression
 {
