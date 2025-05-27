@@ -46,6 +46,7 @@ public class TonalCoverageCalculator
         {
             foreach (var subset2 in RatioPowerSet)
             {
+                // Only consider ratios covering the original set
                 var union = subset1.Union(subset2);
                 HashSet<HashSet<double>> subsets = [subset1, subset2];
                 if (OriginalRatios.SetEquals(union) && !TonalCoverages.ContainsKey(subsets))
@@ -57,7 +58,9 @@ public class TonalCoverageCalculator
                     {
                         SweepData sweepData1 = sweep1.OctaveSweepData[sweepIndex];
                         SweepData sweepData2 = sweep2.OctaveSweepData[sweepIndex];
-                        if (sweepData1.ClusterTargetMatches.Count > 0 && sweepData2.ClusterTargetMatches.Count > 0)
+                        var targetMatchUnion = sweepData1.ClusterTargetMatches.Union(sweepData2.ClusterTargetMatches);
+                        // Check if target match union covers tones
+                        if (targetMatchUnion.Count() == union.Count())
                         {
                             var partialCoverage1 = new PartialTonalCoverage(sweepData1);
                             var partialCoverage2 = new PartialTonalCoverage(sweepData2);
@@ -143,7 +146,8 @@ public class TonalCoverageCalculator
         int fractionMatchMinSize = 1,
         int fundamentalDecimalsDisplayed = 2,
         int ratioSetDecimalsDisplayed = 2,
-        double printThreshold = 0.11)
+        double printThreshold = 0.11,
+        int maxSubsetLcm = 24)
     {
         List<string> consoleRows = [];
         string format = "F" + ratioSetDecimalsDisplayed;
@@ -184,7 +188,7 @@ public class TonalCoverageCalculator
                     }
 
                     // Only print lcm of reasonable size
-                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > 24))
+                    if (tonalCoverage.FractionLCMs.Any(lcm => lcm > maxSubsetLcm))
                         continue;
 
                     rowBatch.Add($"{tonalCoverage}");

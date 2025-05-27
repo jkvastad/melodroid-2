@@ -110,30 +110,32 @@ public class Program
         //    Console.WriteLine(consoleRow);
 
         // Tonal Coverage Test                
-        //var FractionsToSweep = MinorChord_Tritone;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
-        //var tonalCoverageCalculator = new TonalCoverageCalculator(
-        //    ratiosToSweep,
-        //    clusterWidth: 0.01);
-        //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2))
-        //    Console.WriteLine(consoleRow);
+        var FractionsToSweep = LCM15;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
+        var tonalCoverageCalculator = new TonalCoverageCalculator(
+            ratiosToSweep,
+            clusterWidth: 0.01);
+        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 24))
+            Console.WriteLine(consoleRow);
 
 
         // Octave Sweep Test                
-        var FractionsToSweep = DimChord;
-        List<Fraction> ClusterTargets = GoodFractions;
-        double clusterWidth = 0.01;
-        double sweepStep = 0.001;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        foreach (var consoleRow in sweep.GetConsoleOutput())
-            Console.WriteLine(consoleRow);
-        Console.WriteLine("---");
-        var ratiosToSweep2 = new HashSet<double>() { 1.0666666666666667, 1.25, 1.50 };
-        //var ratiosToSweep2 = DimChord.ToHashSet();        
-        OctaveSweep sweep2 = new(ratiosToSweep2, ClusterTargets, clusterWidth, sweepStep);
-        foreach (var consoleRow2 in sweep2.GetConsoleOutput())
-            Console.WriteLine(consoleRow2);
+        //var FractionsToSweep = LCM8;
+
+        //List<Fraction> ClusterTargets = GoodFractions;
+        //double clusterWidth = 0.01;
+        //double sweepStep = 0.001;
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        //foreach (var consoleRow in sweep.GetConsoleOutput())
+        //    Console.WriteLine(consoleRow);
+
+        //Console.WriteLine("---");
+        ////var ratiosToSweep2 = new HashSet<double>() { 1.0666666666666667, 1.25, 1.50 };
+        //var ratiosToSweep2 = DimChord.Select(fraction => (double)(fraction * (double)MinorSecond)).ToHashSet();
+        //OctaveSweep sweep2 = new(ratiosToSweep2, ClusterTargets, clusterWidth, sweepStep);
+        //foreach (var consoleRow2 in sweep2.GetConsoleOutput())
+        //    Console.WriteLine(consoleRow2);
 
     }
 }
