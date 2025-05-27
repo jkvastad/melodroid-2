@@ -110,12 +110,12 @@ public class Program
         //    Console.WriteLine(consoleRow);
 
         // Tonal Coverage Test                
-        var FractionsToSweep = LCM15;
+        var FractionsToSweep = LCM24;
         var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
         var tonalCoverageCalculator = new TonalCoverageCalculator(
             ratiosToSweep,
             clusterWidth: 0.01);
-        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 24))
+        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 15))
             Console.WriteLine(consoleRow);
 
 

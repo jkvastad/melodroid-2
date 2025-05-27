@@ -69,7 +69,9 @@ public class TonalCoverageCalculator
                             var partialCoverage1 = new PartialTonalCoverage(sweepData1);
                             var partialCoverage2 = new PartialTonalCoverage(sweepData2);
                             var tonalCoverage = new TonalCoverage(partialCoverage1, partialCoverage2);
-                            tonalCoverages.Add(tonalCoverage);
+                            // Tonal coverage must share lcm factor
+                            if (tonalCoverage.CommonLCMFactor > 0)
+                                tonalCoverages.Add(tonalCoverage);
                         }
                     }
                     TonalCoverages[subsets] = tonalCoverages;
@@ -102,7 +104,7 @@ public class TonalCoverageCalculator
             FractionSubsets = [[.. partial1.ClusterTargetMatches.Values], [.. partial2.ClusterTargetMatches.Values]];
             FractionLCMs = [partial1.Lcm, partial2.Lcm];
 
-            CommonLCMFactor = CommonFactors(partial1.LcmPrimes, partial2.LcmPrimes);            
+            CommonLCMFactor = CommonFactors(partial1.LcmPrimes, partial2.LcmPrimes);
         }
 
         public override string ToString()
