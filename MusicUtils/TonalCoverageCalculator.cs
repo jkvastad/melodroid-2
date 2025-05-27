@@ -46,6 +46,10 @@ public class TonalCoverageCalculator
         {
             foreach (var subset2 in RatioPowerSet)
             {
+                // Only consider non-trivial subsets
+                if (subset1.IsSubsetOf(subset2) || subset2.IsSubsetOf(subset1))
+                    continue;
+
                 // Only consider ratios covering the original set
                 var union = subset1.Union(subset2);
                 HashSet<HashSet<double>> subsets = [subset1, subset2];
@@ -152,11 +156,11 @@ public class TonalCoverageCalculator
         List<string> consoleRows = [];
         string format = "F" + ratioSetDecimalsDisplayed;
 
-        foreach (var setPair in TonalCoverages.Keys)
+        foreach (var subsetPair in TonalCoverages.Keys)
         {
             List<string> rowBatch = [];
             var powerSetSubsets = new StringBuilder();
-            foreach (var set in setPair)
+            foreach (var set in subsetPair)
             {
                 powerSetSubsets.Append($"({string.Join(" ", set.Select(n => n.ToString(format)))})");
             }
@@ -164,7 +168,7 @@ public class TonalCoverageCalculator
 
             string previousLine = "";
             double previousFundamental = 0;
-            foreach (var tonalCoverage in TonalCoverages[setPair])
+            foreach (var tonalCoverage in TonalCoverages[subsetPair])
             {
                 // Only print matches of sufficient size
                 if (tonalCoverage.FractionSubsets.Any(subset => subset.Count < fractionMatchMinSize))
