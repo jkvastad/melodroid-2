@@ -114,7 +114,7 @@ public class OctaveSweep
         }
     }
 
-    public List<string> GetConsoleOutput()
+    public List<string> GetConsoleOutput(bool fullMatchOnly = false)
     {
         var consoleRows = new List<string>();
         StringBuilder header = new();
@@ -143,6 +143,10 @@ public class OctaveSweep
 
             // Skip row if identical to last
             if (currentRow.Keys.SequenceEqual(previousRow.Keys))
+                continue;
+
+            // Skip row if not full match and full match enabled
+            if (sweepData.ClusterTargetMatches.Count() != RatiosToSweep.Count)
                 continue;
 
             // Print row

@@ -138,8 +138,18 @@ public static class MusicTheory
             (double)MajorSeventh,
             Tritone};
 
+    // Subset of 15@4 minus 5/3 relative @4, Subset of 15@11,
+    public static readonly List<double> PentatonicScale = new List<double>() {
+            (double)Unison,
+            (double)MajorSecond,
+            (double)MajorThird,
+            (double)PerfectFifth,
+            (double)MajorSixth,
+            };
 
-    // A minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
+
+
+    // A C minor eleventh - almost full LCM 15 at 12-TET note D (Missing fraction 5/3 relative note D)
     public static readonly List<Fraction> MinorEleventhChord = [
         Unison,
         MajorSecond,

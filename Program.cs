@@ -1,4 +1,5 @@
 ﻿using Fractions;
+using Melodroid_2.LCMs;
 using Melodroid_2.MusicUtils;
 using System.Collections.Immutable;
 using static Melodroid_2.MusicUtils.MusicTheory;
@@ -100,9 +101,9 @@ public class Program
         //TODO: Fix error - missing 0 4 7 (10@4) -> 1 4 7 (15@4). Perhaps some error relating to cluster width
         // - result shows up at (large) cluster width 0.2
         //var originRatios = MajorChordFractions.Select(fraction => (double)(fraction)).ToHashSet();
-        //var keyOffset = (double)MinorSecond;
+        //var keyOffset = (double)MinorSixth;
         ////var targetRatios = new HashSet<double>() { 1.0666666666666667, 1.25, 1.50 };
-        //var targetRatios = DimChord.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();
+        //var targetRatios = MajorChordFractions.Select(fraction => ((double)fraction * keyOffset)).ToHashSet();
         ////var keyOffset = PerfectFourth;
         ////var targetRatios = MajorChordFractions.Select(fraction => (double)(fraction * keyOffset)).ToHashSet();        
         //ChordProgression chordProgression = new(originRatios, targetRatios, GoodFractions, clusterWidth: 0.02);
@@ -110,32 +111,62 @@ public class Program
         //    Console.WriteLine(consoleRow);
 
         // Tonal Coverage Test                
-        var FractionsToSweep = LCM24;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
-        var tonalCoverageCalculator = new TonalCoverageCalculator(
-            ratiosToSweep,
-            clusterWidth: 0.01);
-        foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 15))
-            Console.WriteLine(consoleRow);
+        //var FractionsToSweep = new List<double>()
+        //{
+        //    (double) MinorSeventh,
+        //    (double) MinorSecond,
+        //    (double) PerfectFourth,
+        //    (double) MajorSixth,
+        //    (double) Unison,
+        //    (double) MinorThird,
+        //    (double) Tritone,
+        //};
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
+        //var tonalCoverageCalculator = new TonalCoverageCalculator(
+        //    ratiosToSweep,
+        //    clusterWidth: 0.012);
+        //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 24))
+        //    Console.WriteLine(consoleRow);
 
 
         // Octave Sweep Test                
-        //var FractionsToSweep = LCM8;
-
-        //List<Fraction> ClusterTargets = GoodFractions;
-        //double clusterWidth = 0.01;
-        //double sweepStep = 0.001;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        //foreach (var consoleRow in sweep.GetConsoleOutput())
-        //    Console.WriteLine(consoleRow);
+        var FractionsToSweep = new List<double>()
+        {
+            (double) Unison,
+            (double) MajorSecond,
+            (double) MajorThird,
+            //(double) PerfectFourth,            
+            (double) PerfectFifth,            
+            //(double) MajorSixth,
+            (double) MajorSeventh,
+        };
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = 0.01;
+        double sweepStep = 0.001;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true))
+            Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
-        ////var ratiosToSweep2 = new HashSet<double>() { 1.0666666666666667, 1.25, 1.50 };
-        //var ratiosToSweep2 = DimChord.Select(fraction => (double)(fraction * (double)MinorSecond)).ToHashSet();
+        //var fractionsToSweep2 = new List<double>()
+        //{
+        //    (double) MinorSeventh,
+        //    (double) MinorSecond,
+        //    (double) PerfectFourth,
+        //    (double) MinorSixth,
+        //    (double) Unison,
+        //    (double) MinorThird,
+        //};
+        //var ratiosToSweep2 = fractionsToSweep2.Select(fraction => (double)fraction).ToHashSet();
         //OctaveSweep sweep2 = new(ratiosToSweep2, ClusterTargets, clusterWidth, sweepStep);
         //foreach (var consoleRow2 in sweep2.GetConsoleOutput())
         //    Console.WriteLine(consoleRow2);
 
+        //var lcm2 = new LCMs.LCM2();
+        //var lcm4 = new LCMs.LCM4();
+        //Console.WriteLine(lcm2.Keys);
+        //Console.WriteLine(lcm4.Keys);
+        //Console.WriteLine(lcm4.Keys | lcm2.Keys << 4 );
     }
 }
