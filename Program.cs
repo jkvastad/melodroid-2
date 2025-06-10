@@ -130,23 +130,23 @@ public class Program
 
 
         // Octave Sweep Test                
-        var FractionsToSweep = new List<double>()
-        {
-            (double) Unison,
-            (double) MajorSecond,
-            (double) MajorThird,
-            //(double) PerfectFourth,            
-            (double) PerfectFifth,            
-            //(double) MajorSixth,
-            (double) MajorSeventh,
-        };
-        List<Fraction> ClusterTargets = GoodFractions;
-        double clusterWidth = 0.01;
-        double sweepStep = 0.001;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true))
-            Console.WriteLine(consoleRow);
+        //var FractionsToSweep = new List<double>()
+        //{
+        //    (double) Unison,            
+        //    //(double) MinorThird,
+        //    (double) MajorThird,
+        //    //(double) PerfectFourth,            
+        //    (double) PerfectFifth,            
+        //    //(double) MinorSixth,
+        //    //(double) MinorSeventh,
+        //};
+        //List<Fraction> ClusterTargets = GoodFractions;
+        //double clusterWidth = 0.01;
+        //double sweepStep = 0.001;
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        //foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))        
+        //    Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
         //var fractionsToSweep2 = new List<double>()
@@ -168,5 +168,10 @@ public class Program
         //Console.WriteLine(lcm2.Keys);
         //Console.WriteLine(lcm4.Keys);
         //Console.WriteLine(lcm4.Keys | lcm2.Keys << 4 );
+
+        Tet12ChromaMask mask = new(new(0b000010001001));
+        var lcms = Tet12ChromaMask.GetMaskRootLCMs(mask);
+        foreach (var lcm in lcms)
+            Console.WriteLine(lcm);
     }
 }

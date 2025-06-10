@@ -139,7 +139,7 @@ public class TonalCoverageCalculator
             OriginalRatios = sweepData.RatiosToSweep;
             Fundamental = sweepData.Fundamental;
             ClusterTargetMatches = sweepData.ClusterTargetMatches;
-            Lcm = (int)LCM(ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
+            Lcm = LCM(ClusterTargetMatches.Values.Select(fraction => (int)fraction.Denominator).ToArray());
             LcmPrimes = new List<int>(Factorise(Lcm));
         }
     }

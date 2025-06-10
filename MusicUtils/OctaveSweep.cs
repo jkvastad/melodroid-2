@@ -114,7 +114,7 @@ public class OctaveSweep
         }
     }
 
-    public List<string> GetConsoleOutput(bool fullMatchOnly = false)
+    public List<string> GetConsoleOutput(bool fullMatchOnly = false, bool skipDuplicateResults = true)
     {
         var consoleRows = new List<string>();
         StringBuilder header = new();
@@ -142,11 +142,11 @@ public class OctaveSweep
                 currentRow[sweepData.ClusterTargetMatches[targetRatio]] = targetRatio;
 
             // Skip row if identical to last
-            if (currentRow.Keys.SequenceEqual(previousRow.Keys))
+            if (skipDuplicateResults && currentRow.Keys.SequenceEqual(previousRow.Keys))
                 continue;
 
             // Skip row if not full match and full match enabled
-            if (sweepData.ClusterTargetMatches.Count() != RatiosToSweep.Count)
+            if (fullMatchOnly && sweepData.ClusterTargetMatches.Count() != RatiosToSweep.Count)
                 continue;
 
             // Print row
@@ -159,7 +159,7 @@ public class OctaveSweep
                 else
                     consoleRow.Append("      ");
             }
-            var lcm = LCM(sweepData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());            
+            var lcm = LCM(sweepData.ClusterTargetMatches.Values.Select(fraction => (int)fraction.Denominator).ToArray());            
             consoleRow.Append($"{lcm,-5}");
             consoleRow.Append($"{sweepData.ClusterTargetMatches.Count(),-5}");            
             consoleRows.Add(consoleRow.ToString());

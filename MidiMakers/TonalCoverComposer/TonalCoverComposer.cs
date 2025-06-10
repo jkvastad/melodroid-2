@@ -1,7 +1,6 @@
 ﻿using Melodroid_2.LCMs;
-using System;
 
-namespace Melodroid_2.MidiMakers;
+namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 
 public class TonalCoverComposer
 {
@@ -47,43 +46,8 @@ public class TimeEvent
     Dictionary<int, bool> KeyOnOff { get; set; }
     public TonalCover TonalCover { get; set; }
 }
-public class TonalCover
-{
-    List<TonalSet> TonalSets { get; set; }
-    public TonalCover(List<TonalSet> tonalSets)
-    {
-        TonalSets = tonalSets;
-    }
-}
 
-public class TonalSet
-{
-    public virtual Bit12Int ChromaMask { get; set; } // e.g. major triad is new(0b10010001)    
-    public virtual Dictionary<int, List<int>> FullMatchLcmFactors { get; set; } = new();
-    public TonalSet(Bit12Int chromaMask)
-    {
-        //TODO: map chroma mask to full match LCM factors
-        // perhaps a dictionary taking chroma masks and outputing full match lcm factors?
 
-    }
-
-    public static Dictionary<int, List<int>> FullMatchFactorsLcm8 = new()
-    {
-        [0] = { 2, 2, 2 },
-        [2] = { 3, 3 },
-        [4] = { 2, 5 },
-        [7] = { 2, 2, 3 },
-        [11] = { 3, 5 }
-    };
-    public static Dictionary<int, List<int>> FullMatchFactorsLcm15 = new()
-    {
-        [0] = { 2, 2, 2 },
-        [2] = { 3, 3 },
-        [4] = { 2, 5 },
-        [7] = { 2, 2, 3 },
-        [11] = { 3, 5 }
-    };
-}
 
 //public class TonalSet8 : TonalSet
 //{

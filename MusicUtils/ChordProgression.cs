@@ -64,8 +64,8 @@ public class ChordProgression
                 || targetData.ClusterTargetMatches.Keys.Count < minTargetFractionMatches)
                 continue;
 
-            int originLCM = (int)LCM(originData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
-            int targetLCM = (int)LCM(targetData.ClusterTargetMatches.Values.Select(fraction => (long)fraction.Denominator).ToArray());
+            int originLCM = LCM(originData.ClusterTargetMatches.Values.Select(fraction => (int)fraction.Denominator).ToArray());
+            int targetLCM = LCM(targetData.ClusterTargetMatches.Values.Select(fraction => (int)fraction.Denominator).ToArray());
             var commonFactor = CommonFactors(Factorise(originLCM), Factorise(targetLCM));
 
             consoleRow.Append($"{originData.Fundamental,-6:F2}");
