@@ -122,4 +122,11 @@ public static class Utils
         
         return CommonFactor;
     }
+
+    private static readonly Random rng = new();
+
+    public static T RandomElement<T>(this IList<T> list)
+    {
+        return list[rng.Next(list.Count)];
+    }
 }

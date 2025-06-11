@@ -1,4 +1,5 @@
 ﻿using Melodroid_2.LCMs;
+using Melodroid_2.MusicUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +22,24 @@ public class TonalCover
     }
 }
 
+// TODO: Handle higher voicings, for now just go with lcm 8 ring
 /// <summary>
 /// A TonalSet is a set of notes which sounds consonant when played as a block. 
-/// This is all subsets of the LCM8 isomorphism ring (8,9,10,12), as well as 
+/// This is all subsets of the LCM8 isomorphism ring (8,9,10,12), as well as some higher voicings: 
+///     Proper subsets of lcm 15 
+///     G13 for 24@0
 /// </summary>
 public class TonalSet
 {
-    public virtual Bit12Int ChromaMask { get; set; } // e.g. major triad is new(0b10010001)        
-    public TonalSet(Bit12Int chromaMask)
-    {
-        //TODO: map chroma mask to full match LCM factors
-        // perhaps a dictionary taking chroma masks and outputing full match lcm factors?
+    public Tet12ChromaMask ChromaMask { get; set; } // e.g. major triad is new(0b10010001)                
 
+    // TODO: Currently assuming tonal sets are subsets of lcm 8 isomorphic ring
+    // Only need factors at some root, this can then be rotated to desired root
+    public static List<TonalSet> GetTonalSetsWithFactor(int factor, int maxLCM = 12)
+    {
+        List<TonalSet> tonalSetsWithFactor = new();
+        Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.LCM8.GetAllMaskLCMs(maxLCM);
+        return tonalSetsWithFactor;
     }
 
     public static Dictionary<int, List<int>> FullMatchFactorsLcm8 = new()

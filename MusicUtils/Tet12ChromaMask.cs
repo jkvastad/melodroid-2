@@ -28,22 +28,27 @@ public class Tet12ChromaMask
         [11] = new() { new(15, 8) }
     };
 
+    public static Tet12ChromaMask LCM8 = new(new(0b100010010101));
+
     /// <summary>
     /// Calculates all lcms for all rotations of the chroma mask
     /// </summary>
     /// <param name="chromaMask"></param>
     /// <returns> Dictionary with keys being root position, e.g. 1 for lcm after rotating mask right once,
     /// and values being all lcms for that root. Lcm 0 signifies undefined lcm (e.g. tritone inclusion) </returns>
-    public static Dictionary<int, List<int>> GetAllMaskLCMs(Tet12ChromaMask chromaMask)
+    public static Dictionary<int, List<int>> GetAllMaskLCMs(Tet12ChromaMask chromaMask, int maxLcm = 12)
     {
         Dictionary<int, List<int>> lcmsAtRoot = new();
         for (int root = 0; root < 12; root++)
         {
             Tet12ChromaMask rotatedMask = new(chromaMask.Mask >> root);
-            lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask);
+            lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask).Where(lcm => lcm <= 12).ToList();
         }
         return lcmsAtRoot;
     }
+
+    public Dictionary<int, List<int>> GetAllMaskLCMs(int maxLcm = 12) => GetAllMaskLCMs(this);
+
 
     /// <summary>
     /// Gets all LCMs relative the masks 0 position
@@ -79,6 +84,52 @@ public class Tet12ChromaMask
 
         return combinationLCMs;
     }
+
+    public List<int> GetMaskRootLCMs() => GetMaskRootLCMs(this);
+
+    public static List<Tet12ChromaMask> GetAllMaskSubsets(Tet12ChromaMask mask)
+    {
+        List<int> allMaskBitCombinations = GetSetBitCombinations((int)mask.Mask);
+        return allMaskBitCombinations.Select(bits => new Tet12ChromaMask(new(bits))).ToList();
+    }
+
+    /// <summary>
+    /// Get all non-zero bit combinations
+    /// </summary>
+    /// <param name="n"></param>
+    /// <param name="maxBits"></param>
+    /// <returns></returns>
+    public static List<int> GetSetBitCombinations(int n, int maxBits = 12)
+    {
+        List<int> setBitPositions = new List<int>();
+
+        // Find positions of set bits
+        for (int i = 0; i < maxBits; i++)
+        {
+            if ((n & (1 << i)) != 0)
+                setBitPositions.Add(i);
+        }
+
+        List<int> combinations = new List<int>();
+        int totalSubsets = 1 << setBitPositions.Count;
+
+        // Generate all non-zero subsets - a subset is some combination of set bit positions
+        for (int subset = 1; subset < totalSubsets; subset++)
+        {
+            int combination = 0;
+            // convert subset bits to (absolute) bit positions
+            for (int bit = 0; bit < setBitPositions.Count; bit++)
+            {
+                if ((subset & (1 << bit)) != 0)
+                    combination |= (1 << setBitPositions[bit]);
+            }
+            combinations.Add(combination);
+        }
+
+        return combinations;
+    }
+
+    public List<int> GetSetBitCombinations() => GetSetBitCombinations((int)Mask, 12);
 
     public static List<List<T>> GetCombinations<T>(List<List<T>> jaggedArray)
     {
