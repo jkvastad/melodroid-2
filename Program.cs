@@ -169,9 +169,14 @@ public class Program
         //Console.WriteLine(lcm4.Keys);
         //Console.WriteLine(lcm4.Keys | lcm2.Keys << 4 );
 
-        Tet12ChromaMask mask = new(new(0b000010001001));
+        Tet12ChromaMask mask = new(new(0b000010010001));
         var lcms = Tet12ChromaMask.GetMaskRootLCMs(mask);
         foreach (var lcm in lcms)
             Console.WriteLine(lcm);
+
+        var allLcms = Tet12ChromaMask.GetAllMaskLCMs(mask);
+        foreach (var root in allLcms.Keys)
+            foreach (var lcm in allLcms[root])
+                Console.WriteLine($"{root}: {lcm}");
     }
 }

@@ -28,7 +28,28 @@ public class Tet12ChromaMask
         [11] = new() { new(15, 8) }
     };
 
-    // Gets all LCMs relative the masks 0 position
+    /// <summary>
+    /// Calculates all lcms for all rotations of the chroma mask
+    /// </summary>
+    /// <param name="chromaMask"></param>
+    /// <returns> Dictionary with keys being root position, e.g. 1 for lcm after rotating mask right once,
+    /// and values being all lcms for that root. Lcm 0 signifies undefined lcm (e.g. tritone inclusion) </returns>
+    public static Dictionary<int, List<int>> GetAllMaskLCMs(Tet12ChromaMask chromaMask)
+    {
+        Dictionary<int, List<int>> lcmsAtRoot = new();
+        for (int root = 0; root < 12; root++)
+        {
+            Tet12ChromaMask rotatedMask = new(chromaMask.Mask >> root);
+            lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask);
+        }
+        return lcmsAtRoot;
+    }
+
+    /// <summary>
+    /// Gets all LCMs relative the masks 0 position
+    /// </summary>
+    /// <param name="chromaMask"></param>
+    /// <returns></returns>
     public static List<int> GetMaskRootLCMs(Tet12ChromaMask chromaMask)
     {
         List<int> positions = [];
@@ -58,7 +79,6 @@ public class Tet12ChromaMask
 
         return combinationLCMs;
     }
-
 
     public static List<List<T>> GetCombinations<T>(List<List<T>> jaggedArray)
     {
