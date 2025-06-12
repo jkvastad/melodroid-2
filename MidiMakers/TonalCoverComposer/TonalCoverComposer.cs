@@ -14,7 +14,7 @@ namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 public class TonalCoverComposer
 {
     public List<TimeEvent> TimeEvents { get; set; } = [];
-    public int TotalTimeEvents { get; set; } = 4;
+    public int TotalTimeEvents { get; set; } = 16;
     public static int InitialFundamental = 60; // C4, middle C
 
     public void Compose()
@@ -67,11 +67,17 @@ public class TonalCoverComposer
             // calculate keys to keep, turn on, turn off
             Tet12ChromaMask keysInAnyMask = new(oldCoverMask.Mask | newCoverMask.Mask);
             var previousMidi = previousTimeEvent.MidiOnOff;
-            MidiOnOff newMidiOnOff = new(previousMidi); // deep copy
+            MidiOnOff newMidiOnOff = new(previousMidi); // deep copy old keys, to turn off old on keys            
 
             // turn off keys only present in old mask
             Tet12ChromaMask keysOnlyInOldMask = new(keysInAnyMask.Mask ^ newCoverMask.Mask); // if keys in new cover mask, xor to false
             newMidiOnOff.TurnAllChromaKeysOff(keysOnlyInOldMask);
+
+            //Remove duplicate off keys, makes midi creation easier
+            foreach (var oldKeyPair in previousMidi.KeyOnOff)
+                if (newMidiOnOff.KeyOnOff.ContainsKey(oldKeyPair.Key))
+                    if (oldKeyPair.Value == false && newMidiOnOff.KeyOnOff[oldKeyPair.Key] == false)
+                        newMidiOnOff.KeyOnOff.Remove(oldKeyPair.Key);
 
             // turn on new keys not present in old mask
             Tet12ChromaMask keysOnlyInNewMask = new(keysInAnyMask.Mask ^ oldCoverMask.Mask); // if keys in old cover mask, xor to false
@@ -79,6 +85,13 @@ public class TonalCoverComposer
             var newKeys = ChromaToTriadMidi(keysOnlyInNewMask, InitialFundamental);
             foreach (var keyPair in newKeys)
                 newMidiOnOff.KeyOnOff[keyPair.Key] = keyPair.Value;
+
+            // Remove duplicate on keys
+            foreach (var oldKeyPair in previousMidi.KeyOnOff)
+                if (newMidiOnOff.KeyOnOff.ContainsKey(oldKeyPair.Key))
+                    if (oldKeyPair.Value == true && newMidiOnOff.KeyOnOff[oldKeyPair.Key] == true)
+                        newMidiOnOff.KeyOnOff.Remove(oldKeyPair.Key);
+
 
             // create new time event
             TimeEvent timeEvent = new(newTonalCover, newMidiOnOff);
@@ -95,6 +108,9 @@ public class TonalCoverComposer
     /// <returns></returns>
     public static Dictionary<int, bool> ChromaToTriadMidi(Tet12ChromaMask mask, int maskFundamental)
     {
+        // no chroma no midi
+        if (mask.Mask == 0)
+            return [];
         // Go through all intervals
         var intervals = mask.ChromaToIntervals();
         List<int> shiftedIntervals = [];

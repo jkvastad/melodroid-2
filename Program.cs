@@ -189,11 +189,11 @@ public class Program
         //foreach (var set in sets)
         //    Console.WriteLine(set.ChromaMask.Mask);
 
-        //TonalCoverComposer composer = new();
-        //composer.Compose();
-        //string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
-        //string fileName = "tonal_composer_test";
-        //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
-        //NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, overWrite: true);
+        TonalCoverComposer composer = new();
+        composer.Compose();
+        string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
+        string fileName = "tonal_composer_test";
+        var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
     }
 }

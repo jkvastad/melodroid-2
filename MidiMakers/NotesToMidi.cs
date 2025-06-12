@@ -33,14 +33,14 @@ public class NotesToMidi
         double bpm = 60,
         bool overWrite = false)
     {
+        //TODO tempo map does not affect writing midi, seems like it must be handled when creating the notes.
         MidiFile midiFile = new MidiFile();
         midiFile.TimeDivision = new TicksPerQuarterNoteTimeDivision(ticksPerQuarterNote);
-        midiFile.ReplaceTempoMap(TempoMap.Create(Tempo.FromBeatsPerMinute(bpm)));
 
         TrackChunk trackChunk = new TrackChunk();
         using (var notesManager = trackChunk.ManageNotes())
         {
-            var notes = notesManager.Objects;            
+            var notes = notesManager.Objects;
             //add notes                       
             foreach (var note in midiNotes)
             {
@@ -54,6 +54,8 @@ public class NotesToMidi
 
     public static List<Note> TimeEventsToNotes(List<TimeEvent> timeEvents)
     {
+        int timeScaling = 1;
+        // TODO: handle bpm by adjusting note length 
         List<Note> notes = [];
         Dictionary<int, int> liveNotes = []; //note, tick start
         // track when midi values turn on and off, save h
@@ -62,9 +64,14 @@ public class NotesToMidi
         {
             foreach (var keyPair in timeEvent.MidiOnOff.KeyOnOff)
             {
-                // note on, start recording note
+                // note on, start recording note.
                 if (keyPair.Value == true)
+                {
+                    // If already active, add note and start new
+                    if (liveNotes.ContainsKey(keyPair.Key))
+                        AddNote(keyPair.Key);
                     liveNotes[keyPair.Key] = currentTick;
+                }
 
                 // note off, create note
                 if (keyPair.Value == false)
@@ -73,6 +80,17 @@ public class NotesToMidi
             }
             currentTick++;
         }
+        List<int> liveNoteNumbers = liveNotes.Keys.ToList();
+        foreach (var noteNumber in liveNoteNumbers)
+            AddNote(noteNumber);
+
+        // drywetmidi truncates last note for reasons
+        notes.Add(new Note((SevenBitNumber)0)
+        {
+            Time = timeScaling * currentTick + 1, //truncate this zero note
+            Length = 0, // for how long does note keep going
+            Velocity = (SevenBitNumber)0
+        });
 
         return notes;
 
@@ -80,8 +98,8 @@ public class NotesToMidi
         {
             Note note = new Note((SevenBitNumber)noteNumber)
             {
-                Time = liveNotes[noteNumber], // at what ticks does note start
-                Length = currentTick - liveNotes[noteNumber], // for how long does note keep going
+                Time = timeScaling * liveNotes[noteNumber], // at what ticks does note start
+                Length = timeScaling * (currentTick - liveNotes[noteNumber]), // for how long does note keep going
                 Velocity = (SevenBitNumber)64
             };
             notes.Add(note);
