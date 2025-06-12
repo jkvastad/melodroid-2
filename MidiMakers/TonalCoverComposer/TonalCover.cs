@@ -1,5 +1,6 @@
 ﻿using Melodroid_2.LCMs;
 using Melodroid_2.MusicUtils;
+using System.Numerics;
 
 namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 
@@ -42,12 +43,34 @@ public class TonalSet
     }
 
 
-    // TODO: Currently assuming tonal sets are subsets of lcm 8 isomorphic ring
+    // TODO: Currently assuming tonal sets are subsets of lcm 8 isomorphic ring, good enough?
     // Only need factors at some root, this can then be rotated to desired root
-    public static List<TonalSet> GetTonalSetsWithFactor(int factor, int maxLCM = 12)
+    public static List<TonalSet> GetTonalSetsWithFactor(int factor, int minSubSetSize = 2, int maxLCM = 12)
     {
-        List<TonalSet> tonalSetsWithFactor = new();
-        Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.LCM8.GetAllMaskLCMs(maxLCM);
+        // Get all tonal sets
+        // currently only working with lcm8
+        List<int> allLcm8Subsets = Tet12ChromaMask.LCM8.GetSetBitCombinations()
+            .Where(mask => BitOperations.PopCount((uint)mask) >= minSubSetSize).ToList();
+
+        // calculate lcm for each subset
+        List<TonalSet> tonalSetsWithFactor = [];
+        foreach (var subset in allLcm8Subsets)
+        {
+            Tet12ChromaMask mask = new(subset);
+            var maskLCMs = mask.GetAllMaskLCMs(maxLCM);
+            foreach (var keyPair in maskLCMs)
+            {
+                foreach (var lcm in keyPair.Value)
+                {
+                    if (lcm % factor == 0)
+                    {
+                        // put mask in root position for factor
+                        tonalSetsWithFactor.Add(new(mask.Mask << keyPair.Key));
+                    }
+                }
+            }
+        }
+
         return tonalSetsWithFactor;
     }
 

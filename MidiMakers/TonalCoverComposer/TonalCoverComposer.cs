@@ -13,10 +13,10 @@ namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 /// </summary>
 public class TonalCoverComposer
 {
-    public List<TimeEvent> TimeEvents { get; set; }
+    public List<TimeEvent> TimeEvents { get; set; } = [];
     public int TotalTimeEvents { get; set; } = 4;
     public static int InitialFundamental = 60; // C4, middle C
-    
+
     public void Compose()
     {
         List<int> allLcm8Chromas = Tet12ChromaMask.LCM8.GetSetBitCombinations(); // Get all tonal set subsets
@@ -37,6 +37,13 @@ public class TonalCoverComposer
 
             // select random lcm factor from random fundamental from selected tonal set
             Dictionary<int, List<int>> maskLCMs = previousTonalSet.ChromaMask.GetAllMaskLCMs(); // lcms implicitly capped
+            // only keep legal (non zero) lcms
+            var keys = maskLCMs.Keys;
+            foreach (var key in keys)
+            {
+                if (maskLCMs[key].All(lcm => lcm == 0))
+                    maskLCMs.Remove(key);
+            }
             int fundamentalShift = maskLCMs.Keys.ToList().RandomElement();
             int maskLCM = maskLCMs[fundamentalShift].RandomElement();
             int lcmFactor = Utils.Factorise(maskLCM).RandomElement();

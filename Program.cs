@@ -1,5 +1,7 @@
 ﻿using Fractions;
 using Melodroid_2.LCMs;
+using Melodroid_2.MidiMakers;
+using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using System.Collections.Immutable;
 using static Melodroid_2.MusicUtils.MusicTheory;
@@ -169,18 +171,29 @@ public class Program
         //Console.WriteLine(lcm4.Keys);
         //Console.WriteLine(lcm4.Keys | lcm2.Keys << 4 );
 
-        Tet12ChromaMask mask = new(new(0b100010010101));
-        var lcms = Tet12ChromaMask.GetMaskRootLCMs(mask);
-        foreach (var lcm in lcms)
-            Console.WriteLine(lcm);
+        //Tet12ChromaMask mask = new(new(0b100010010101));
+        //var lcms = Tet12ChromaMask.GetMaskRootLCMs(mask);
+        //foreach (var lcm in lcms)
+        //    Console.WriteLine(lcm);
 
-        var maskSubsets = Tet12ChromaMask.GetAllMaskSubsets(mask);
-        foreach (var maskSubset in maskSubsets)
-            Console.WriteLine(maskSubset.Mask);
+        //var maskSubsets = Tet12ChromaMask.GetAllMaskSubsets(mask);
+        //foreach (var maskSubset in maskSubsets)
+        //    Console.WriteLine(maskSubset.Mask);
 
         //var allLcms = Tet12ChromaMask.GetAllMaskLCMs(mask);
         //foreach (var root in allLcms.Keys)
         //    foreach (var lcm in allLcms[root])
         //        Console.WriteLine($"{root}: {lcm}");
+
+        //var sets = TonalSet.GetTonalSetsWithFactor(3);
+        //foreach (var set in sets)
+        //    Console.WriteLine(set.ChromaMask.Mask);
+
+        //TonalCoverComposer composer = new();
+        //composer.Compose();
+        //string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
+        //string fileName = "tonal_composer_test";
+        //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        //NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, overWrite: true);
     }
 }

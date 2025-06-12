@@ -40,8 +40,7 @@ public class NotesToMidi
         TrackChunk trackChunk = new TrackChunk();
         using (var notesManager = trackChunk.ManageNotes())
         {
-            var notes = notesManager.Objects;
-
+            var notes = notesManager.Objects;            
             //add notes                       
             foreach (var note in midiNotes)
             {
