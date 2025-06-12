@@ -1,10 +1,5 @@
 ﻿using Melodroid_2.LCMs;
 using Melodroid_2.MusicUtils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 
@@ -15,10 +10,18 @@ namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 /// </summary>
 public class TonalCover
 {
-    List<TonalSet> TonalSets { get; set; }
+    public List<TonalSet> TonalSets { get; set; }
     public TonalCover(List<TonalSet> tonalSets)
     {
         TonalSets = tonalSets;
+    }
+
+    internal Tet12ChromaMask GetChromaMask()
+    {
+        Bit12Int coverMask = 0;
+        foreach (var tonalSet in TonalSets)
+            coverMask |= tonalSet.ChromaMask.Mask;
+        return coverMask;
     }
 }
 
@@ -31,7 +34,13 @@ public class TonalCover
 /// </summary>
 public class TonalSet
 {
-    public Tet12ChromaMask ChromaMask { get; set; } // e.g. major triad is new(0b10010001)                
+    public Tet12ChromaMask ChromaMask { get; set; } // e.g. major triad is new(0b10010001)
+
+    public TonalSet(Tet12ChromaMask chromaMask)
+    {
+        ChromaMask = chromaMask;
+    }
+
 
     // TODO: Currently assuming tonal sets are subsets of lcm 8 isomorphic ring
     // Only need factors at some root, this can then be rotated to desired root

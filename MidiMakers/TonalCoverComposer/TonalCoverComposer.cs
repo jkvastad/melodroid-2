@@ -15,40 +15,69 @@ public class TonalCoverComposer
 {
     public List<TimeEvent> TimeEvents { get; set; }
     public int TotalTimeEvents { get; set; } = 4;
-
+    public static int InitialFundamental = 60; // C4, middle C
+    
     public void Compose()
     {
-        HashSet<int> SoundingNotes = new(); //Midi notes which are currently sounding
+        List<int> allLcm8Chromas = Tet12ChromaMask.LCM8.GetSetBitCombinations(); // Get all tonal set subsets
+        Tet12ChromaMask firstChromaMask = new(allLcm8Chromas.RandomElement()); // Take random subset        
+        Dictionary<int, bool> keyOnOff = ChromaToTriadMidi(firstChromaMask, InitialFundamental); // create voicing
 
-        List<int> allLcm8Chromas = Tet12ChromaMask.LCM8.GetSetBitCombinations();
-        Tet12ChromaMask tet12ChromaMask = new(allLcm8Chromas.RandomElement());
+        MidiOnOff firstMidiOnOff = new(keyOnOff); // select on keys for first event
+        TonalSet firstTonalSet = new(firstChromaMask);
+        TonalCover firstTonalCover = new(new([firstTonalSet]));
+        TimeEvent firstTimeEvent = new(firstTonalCover, firstMidiOnOff); // create first time event
+        TimeEvents.Add(firstTimeEvent);
 
-        Dictionary<int, bool> keyOnOff = [];
-        MidiOnOff midiOnOff = new(keyOnOff);
-        TimeEvent firstTimeEvent = new(midiOnOff);
-
-        // randomly choose a well sounding set - define space of all well sounding sets. lcm 8 subset?
-
-        //TonalSet firstTonalSet = new TonalSet(); //select one of all possible tonal sets
-        //firstTimeEvent.TonalCover = new([firstTonalSet]);
         for (int i = 1; i < TotalTimeEvents; i++)
         {
+            TimeEvent previousTimeEvent = TimeEvents.Last();
+            // take random tonal set from previous time event
+            TonalSet previousTonalSet = previousTimeEvent.TonalCover.TonalSets.RandomElement();
 
+            // select random lcm factor from random fundamental from selected tonal set
+            Dictionary<int, List<int>> maskLCMs = previousTonalSet.ChromaMask.GetAllMaskLCMs(); // lcms implicitly capped
+            int fundamentalShift = maskLCMs.Keys.ToList().RandomElement();
+            int maskLCM = maskLCMs[fundamentalShift].RandomElement();
+            int lcmFactor = Utils.Factorise(maskLCM).RandomElement();
+
+            // select random new tonal set sharing factor at fundamental
+            TonalSet tonalSetWithFactor = // gets sets with factor at root position
+                TonalSet.GetTonalSetsWithFactor(lcmFactor).RandomElement();
+            // shift mask to place root at fundamental shift
+            TonalSet newTonalSet = new(tonalSetWithFactor.ChromaMask.Mask << fundamentalShift);
+
+            // create new tonal cover from these two sets
+            TonalCover newTonalCover = new([previousTonalSet, newTonalSet]);
+
+            // adjust midi keys based on tonal cover difference - turn on new unique keys, turn of obsoleted keys, keep unvarying keys 
+
+            // get chroma for keys to sound from new tonal cover
+            Tet12ChromaMask newCoverMask = newTonalCover.GetChromaMask();
+            // get chroma for old tonal cover
+            Tet12ChromaMask oldCoverMask = previousTimeEvent.TonalCover.GetChromaMask();
+
+            // calculate keys to keep, turn on, turn off
+            Tet12ChromaMask keysInAnyMask = new(oldCoverMask.Mask | newCoverMask.Mask);
+            var previousMidi = previousTimeEvent.MidiOnOff;
+            MidiOnOff newMidiOnOff = new(previousMidi); // deep copy
+
+            // turn off keys only present in old mask
+            Tet12ChromaMask keysOnlyInOldMask = new(keysInAnyMask.Mask ^ newCoverMask.Mask); // if keys in new cover mask, xor to false
+            newMidiOnOff.TurnAllChromaKeysOff(keysOnlyInOldMask);
+
+            // turn on new keys not present in old mask
+            Tet12ChromaMask keysOnlyInNewMask = new(keysInAnyMask.Mask ^ oldCoverMask.Mask); // if keys in old cover mask, xor to false
+            // all masks use initial fundamental as root key
+            var newKeys = ChromaToTriadMidi(keysOnlyInNewMask, InitialFundamental);
+            foreach (var keyPair in newKeys)
+                newMidiOnOff.KeyOnOff[keyPair.Key] = keyPair.Value;
+
+            // create new time event
+            TimeEvent timeEvent = new(newTonalCover, newMidiOnOff);
+            TimeEvents.Add(timeEvent);
         }
 
-        // 1st time event:
-        // randomly select lcm
-        // randomly select fundamental from e.g. C3 range
-        // select voicing preferring lcm
-        // create time event with absolute voiced keys
-
-        // Subsequent time events:
-        // Map sounding keys from previous time event to tonal cover
-        // Randomly select lcm factor and fundamental from random subset of previous tonal cover 
-        // Select new lcm containing lcm factor at fundamental
-        // Select new voicing, possibly keeping old notes.
-
-        // ideas: define tonal cover as tonal sets, link tonal sets to lcm factors
     }
 
     /// <summary>
@@ -59,7 +88,32 @@ public class TonalCoverComposer
     /// <returns></returns>
     public static Dictionary<int, bool> ChromaToTriadMidi(Tet12ChromaMask mask, int maskFundamental)
     {
-        throw new NotImplementedException();
+        // Go through all intervals
+        var intervals = mask.ChromaToIntervals();
+        List<int> shiftedIntervals = [];
+        int previousInterval = intervals.First();
+        shiftedIntervals.Add(previousInterval);
+
+        for (int i = 1; i < intervals.Count; i++)
+        {
+            // any interval closer than 3 steps gets pushed up an octave - mostly good enough
+            if (intervals[i] - previousInterval < 3)
+            {
+                int shiftedInterval = intervals[i] + 12;
+                shiftedIntervals.Add(shiftedInterval);
+            }
+            else
+            {
+                shiftedIntervals.Add(intervals[i]);
+                previousInterval = intervals[i];
+            }
+        }
+
+        Dictionary<int, bool> midi = [];
+        foreach (var interval in shiftedIntervals)
+            midi[interval + maskFundamental] = true;
+
+        return midi;
     }
 
     public static Bit12Int MidiToChroma(int midiKey)
@@ -78,11 +132,15 @@ public class TonalCoverComposer
 public class TimeEvent
 {
     public MidiOnOff MidiOnOff { get; set; }
-    public TimeEvent(MidiOnOff midiOnOff)
+    public TonalCover TonalCover { get; set; }
+
+    // constructor for new series of time events
+    public TimeEvent(TonalCover tonalCover, MidiOnOff midiOnOff)
     {
+        // create midi voicing from tonal set
         MidiOnOff = midiOnOff;
+        TonalCover = tonalCover;
     }
-    //public TonalCover TonalCover { get; set; }
 }
 
 public class MidiOnOff
@@ -92,36 +150,30 @@ public class MidiOnOff
     {
         KeyOnOff = keyOnOff;
     }
-
-}
-
-
-
-//public class TonalSet8 : TonalSet
-//{
-//    public override Bit12Int ChromaMask { get => new(0b100010010101); set => base.ChromaMask = value; }
-//    public override Dictionary<int, List<int>> FullMatchLcmFactors
-//    {
-//        get => new()
-//        {
-//            [0] = { 2, 2, 2 },
-//            [2] = { 3, 3 },
-//            [4] = { 2, 5 },
-//            [7] = { 2, 2, 3 },
-//            [11] = { 3, 5 }
-//        };
-//        set => base.FullMatchLcmFactors = value;
-//    }
-//}
-
-public class Voicing
-{
-    public int MidiFundamental { get; set; }
-    public List<int> RelativeKeys { get; set; } // midi keys for voicing relative to MidiFundamental
-    public int Lcm { get; } // Lcm for the voicing for fast lookup
-    public Voicing(int midiFundamental, List<int> relativeKeys, int lcm)
+    // Deep copy constructor
+    public MidiOnOff(MidiOnOff midiOnOff)
     {
-        MidiFundamental = midiFundamental;
-        RelativeKeys = relativeKeys;
+        Dictionary<int, bool> keyOnOff = [];
+        foreach (var keyPair in midiOnOff.KeyOnOff)
+        {
+            keyOnOff[keyPair.Key] = keyPair.Value;
+        }
+        KeyOnOff = keyOnOff;
+    }
+
+    // Chroma mask must be in root position
+    public void TurnAllChromaKeysOff(Tet12ChromaMask chromaMask)
+    {
+        SetAllChromaKeys(chromaMask, false);
+    }
+
+    private void SetAllChromaKeys(Tet12ChromaMask chromaMask, bool keyValue)
+    {
+        List<int> intervals = chromaMask.ChromaToIntervals();
+        foreach (var key in KeyOnOff.Keys)
+        {
+            if (intervals.Contains(key % 12))
+                KeyOnOff[key] = keyValue;
+        }
     }
 }

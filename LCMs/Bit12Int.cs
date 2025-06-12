@@ -64,6 +64,10 @@ public struct Bit12Int
     {
         return new Bit12Int(left._value | (int)right);
     }
+    public static Bit12Int operator ^(Bit12Int left, Bit12Int right)
+    {
+        return new Bit12Int(left._value ^ (int)right);
+    }
 
     public static int operator &(Bit12Int left, int right)
     {
@@ -83,7 +87,7 @@ public struct Bit12Int
     public static explicit operator int(Bit12Int value)
     {
         return value._value;
-    }    
+    }
 
     public static bool operator ==(Bit12Int left, Bit12Int right)
     {
@@ -108,5 +112,5 @@ public struct Bit12Int
     public override string ToString()
     {
         return Convert.ToString(_value, 2).PadLeft(12, '0');
-    }    
+    }
 }

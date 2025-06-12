@@ -1,6 +1,5 @@
 ﻿using Fractions;
 using Melodroid_2.LCMs;
-using System.Linq;
 
 namespace Melodroid_2.MusicUtils;
 
@@ -10,6 +9,11 @@ public class Tet12ChromaMask
     public Tet12ChromaMask(Bit12Int mask)
     {
         Mask = mask;
+    }
+
+    public static implicit operator Tet12ChromaMask(Bit12Int mask)
+    {
+        return new Tet12ChromaMask(mask);
     }
 
     public static Dictionary<int, List<Fraction>> FractionsAtMaskPosition = new()
@@ -152,5 +156,16 @@ public class Tet12ChromaMask
             Generate(jaggedArray, depth + 1, current, results);
             current.RemoveAt(current.Count - 1);
         }
+    }
+
+    public List<int> ChromaToIntervals()
+    {
+        List<int> intervals = [];
+        for (int i = 0; i < 12; i++)
+        {
+            if (((Mask >> i) & 1) == 1)
+                intervals.Add(i);
+        }
+        return intervals;
     }
 }
