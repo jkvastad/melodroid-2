@@ -114,7 +114,11 @@ public class OctaveSweep
         }
     }
 
-    public List<string> GetConsoleOutput(bool fullMatchOnly = false, bool skipDuplicateResults = true)
+    public List<string> GetConsoleOutput(
+        bool fullMatchOnly = false,
+        bool skipDuplicateResults = true,
+        double focusFundamental = -1,
+        double focusRange = 0.02)
     {
         var consoleRows = new List<string>();
         StringBuilder header = new();
@@ -147,10 +151,14 @@ public class OctaveSweep
 
             // Skip row if not full match and full match enabled
             if (fullMatchOnly && sweepData.ClusterTargetMatches.Count() != RatiosToSweep.Count)
+                continue;            
+
+            double fundamental = sweepData.Fundamental;
+            // Skip row if not focused fundamental
+            if (!(focusFundamental < 0) && Math.Abs(fundamental - focusFundamental) > focusRange)
                 continue;
 
             // Print row
-            double fundamental = sweepData.Fundamental;
             consoleRow.Append($"{fundamental,-4:F2}: ");
             foreach (Fraction target in ClusterTargets)
             {

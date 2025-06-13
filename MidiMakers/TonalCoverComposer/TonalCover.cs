@@ -43,6 +43,7 @@ public class TonalSet
     }
 
 
+    // TODO: fix errors, allows e.g. subset 2 6 9 for factor 2 but there is no factor 2@0 
     // TODO: Currently assuming tonal sets are subsets of lcm 8 isomorphic ring, good enough?
     // Only need factors at some root, this can then be rotated to desired root
     public static List<TonalSet> GetTonalSetsWithFactor(int factor, int minSubSetSize = 2, int maxLCM = 12)
@@ -64,8 +65,9 @@ public class TonalSet
                 {
                     if (lcm % factor == 0)
                     {
-                        // put mask in root position for factor
-                        tonalSetsWithFactor.Add(new(mask.Mask << keyPair.Key));
+                        // put mask in root position for factor - e.g. 4@0: (0b100010000100 (Gmajor, 4@7) >>) 7 == 0b000010010001 (C Major, 4@0)
+                        TonalSet newSet = new(mask.Mask >> keyPair.Key);
+                        tonalSetsWithFactor.Add(newSet);
                     }
                 }
             }

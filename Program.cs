@@ -133,23 +133,28 @@ public class Program
 
 
         // Octave Sweep Test                
-        var FractionsToSweep = new List<double>()
-        {
-            (double) Unison,            
-            //(double) MinorThird,
-            (double) MajorThird,
-            //(double) PerfectFourth,            
-            (double) PerfectFifth,            
-            //(double) MinorSixth,
-            //(double) MinorSeventh,
-        };
-        List<Fraction> ClusterTargets = GoodFractions;
-        double clusterWidth = 0.01;
-        double sweepStep = 0.001;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
-            Console.WriteLine(consoleRow);
+        //var FractionsToSweep = new List<double>()
+        //{
+        ////(double)Unison,
+        //(double)MinorSecond,
+        ////(double)MajorSecond,
+        ////(double)MinorThird,
+        //(double)MajorThird,
+        ////(double)PerfectFourth,
+        ////Tritone,
+        ////(double)PerfectFifth,
+        ////(double)MinorSixth,
+        //(double)MajorSixth,
+        ////(double)MinorSeventh,
+        ////(double)MajorSeventh
+        //};
+        //List<Fraction> ClusterTargets = GoodFractions;
+        //double clusterWidth = 0.013;
+        //double sweepStep = 0.001;
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        //foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
+        //    Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
         //var fractionsToSweep2 = new List<double>()
@@ -166,16 +171,62 @@ public class Program
         //foreach (var consoleRow2 in sweep2.GetConsoleOutput())
         //    Console.WriteLine(consoleRow2);
 
-        //Log.Logger = new LoggerConfiguration()
-        //.WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Infinite)
-        //.CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+        .WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Infinite)
+        .CreateLogger();
 
-        //TonalCoverComposer composer = new();
-        //composer.Compose();
-        //string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
-        //string fileName = "tonal_composer_test";
-        //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
-        //NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
+        TonalCoverComposer composer = new();
+        composer.Compose();
+        string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
+        string fileName = "tonal_composer_test";
+        var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
+
+
+        //// TODO why does 1 4 9 give lcm 60 at 0 for GetTonalSetsWithFactor(2) but 0 with GetAllMaskLCMs()? Bug in get tonal sets, flipped chroma masks wrong way
+        //List<Fraction> ClusterTargets = GoodFractions;
+        //double clusterWidth = 0.01;
+        //double sweepStep = 0.001;
+        //var tonalSets = TonalSet.GetTonalSetsWithFactor(2, minSubSetSize:2);
+        ////foreach (TonalSet tonalSet in tonalSets)
+        ////{
+        ////    Console.WriteLine($"{string.Join(" ", tonalSet.ChromaMask.ChromaToIntervals())}");
+        ////}
+        //foreach (TonalSet tonalSet in tonalSets)
+        //{
+        //    if (tonalSet.ChromaMask.ChromaToIntervals().Count < 3)
+        //        continue;
+
+        //    int fundamentalShift = 0;
+        //    TonalSet shiftedSet = new(tonalSet.ChromaMask.Mask << fundamentalShift);
+        //    string intervalsString = shiftedSet.ChromaMask.Mask.Bit12IntToIntervalString();
+        //    var intervals = intervalsString.Split(" ").Select(int.Parse);
+        //    var ratiosToSweep = intervals.Select(interval => MusicTheory.TET12Fractions[interval]).ToHashSet();
+        //    OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+
+        //    List<string> consoleRows = sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true, focusFundamental: 1);
+        //    if (consoleRows.Count < 2)
+        //        continue;
+
+        //    Console.WriteLine(intervalsString);
+        //    for (int row = 1; row < consoleRows.Count; row++)
+        //    {
+        //        var consoleRow = consoleRows[row];
+        //        Console.WriteLine(consoleRow);
+        //    }
+        //}
+
+        //Tet12ChromaMask mask = new(0b001001000100);
+        ////Tet12ChromaMask mask = new(0b010001000010);
+        //Console.WriteLine($"{string.Join(" ", mask.ChromaToIntervals())}");
+
+        //Tet12ChromaMask shiftedMask = mask.Mask >> 4;
+        //Console.WriteLine($"{string.Join(" ", shiftedMask.ChromaToIntervals())}");
+
+        //foreach (var keyPair in shiftedMask.GetAllMaskLCMs())
+        //{
+        //    Console.WriteLine($"{keyPair.Key}: {string.Join(" ", keyPair.Value)}");
+        //}
 
     }
 }

@@ -36,6 +36,11 @@ public class TonalCoverComposer
 
         for (int i = 1; i < TotalTimeEvents; i++)
         {
+            //TODO: fix multiple errors:
+            //  - New tonal sets do not share factor at correct position
+            //  - ? When selecting previous tonal set, same set may be chosen repeatedly
+            //  - - perhaps it is important that a tonal set has on keys recently?
+
             Log.Information($"--- TimeEvent {i} ---");
             TimeEvent previousTimeEvent = TimeEvents.Last();
             // take random tonal set from previous time event
@@ -59,7 +64,7 @@ public class TonalCoverComposer
             // select random new tonal set sharing factor at fundamental
             TonalSet tonalSetWithFactor = // gets sets with factor at root position
                 TonalSet.GetTonalSetsWithFactor(lcmFactor).RandomElement();
-            // shift mask to place root at fundamental shift
+            // shift mask to place root at fundamental shift - e.g. 4@7: 0b000010010001 (C Major 4@0) << 7 == 0b100010000100 (Gmajor 4@7)            
             TonalSet newTonalSet = new(tonalSetWithFactor.ChromaMask.Mask << fundamentalShift);
             Log.Information($"{nameof(newTonalSet)}: {newTonalSet.ChromaMask.Mask.Bit12IntToIntervalString()}");
 
@@ -101,7 +106,7 @@ public class TonalCoverComposer
                     if (oldKeyPair.Value == true && newMidiOnOff.KeyOnOff[oldKeyPair.Key] == true)
                         newMidiOnOff.KeyOnOff.Remove(oldKeyPair.Key);
 
-
+            Log.Information($"Voicing: {string.Join(" ", newMidiOnOff.KeyOnOff.Keys.Where(key => newMidiOnOff.KeyOnOff[key]))}");
             // create new time event
             TimeEvent timeEvent = new(newTonalCover, newMidiOnOff);
             TimeEvents.Add(timeEvent);
