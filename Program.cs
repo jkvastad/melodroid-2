@@ -133,23 +133,23 @@ public class Program
 
 
         // Octave Sweep Test                
-        //var FractionsToSweep = new List<double>()
-        //{
-        //    (double) Unison,            
-        //    //(double) MinorThird,
-        //    (double) MajorThird,
-        //    //(double) PerfectFourth,            
-        //    (double) PerfectFifth,            
-        //    //(double) MinorSixth,
-        //    //(double) MinorSeventh,
-        //};
-        //List<Fraction> ClusterTargets = GoodFractions;
-        //double clusterWidth = 0.01;
-        //double sweepStep = 0.001;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        //foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))        
-        //    Console.WriteLine(consoleRow);
+        var FractionsToSweep = new List<double>()
+        {
+            (double) Unison,            
+            //(double) MinorThird,
+            (double) MajorThird,
+            //(double) PerfectFourth,            
+            (double) PerfectFifth,            
+            //(double) MinorSixth,
+            //(double) MinorSeventh,
+        };
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = 0.01;
+        double sweepStep = 0.001;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
+            Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
         //var fractionsToSweep2 = new List<double>()
@@ -166,42 +166,16 @@ public class Program
         //foreach (var consoleRow2 in sweep2.GetConsoleOutput())
         //    Console.WriteLine(consoleRow2);
 
-        //var lcm2 = new LCMs.LCM2();
-        //var lcm4 = new LCMs.LCM4();
-        //Console.WriteLine(lcm2.Keys);
-        //Console.WriteLine(lcm4.Keys);
-        //Console.WriteLine(lcm4.Keys | lcm2.Keys << 4 );
-
-        //Tet12ChromaMask mask = new(new(0b100010010101));
-        //var lcms = Tet12ChromaMask.GetMaskRootLCMs(mask);
-        //foreach (var lcm in lcms)
-        //    Console.WriteLine(lcm);
-
-        //var maskSubsets = Tet12ChromaMask.GetAllMaskSubsets(mask);
-        //foreach (var maskSubset in maskSubsets)
-        //    Console.WriteLine(maskSubset.Mask);
-
-        //var allLcms = Tet12ChromaMask.GetAllMaskLCMs(mask);
-        //foreach (var root in allLcms.Keys)
-        //    foreach (var lcm in allLcms[root])
-        //        Console.WriteLine($"{root}: {lcm}");
-
-        //var sets = TonalSet.GetTonalSetsWithFactor(3);
-        //foreach (var set in sets)
-        //    Console.WriteLine(set.ChromaMask.Mask);
+        //Log.Logger = new LoggerConfiguration()
+        //.WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Infinite)
+        //.CreateLogger();
 
         //TonalCoverComposer composer = new();
         //composer.Compose();
-        //string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
+        //string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
         //string fileName = "tonal_composer_test";
         //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
         //NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
 
-        Log.Logger = new LoggerConfiguration()
-        .WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Day)
-        .CreateLogger();
-
-        Log.Information("Test1");
-        Log.Information("Test2");
     }
 }

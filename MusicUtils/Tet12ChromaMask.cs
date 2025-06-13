@@ -168,4 +168,9 @@ public class Tet12ChromaMask
         }
         return intervals;
     }
+
+    public override string ToString()
+    {
+        return Mask.ToString();
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using Melodroid_2.LCMs;
 using Melodroid_2.MusicUtils;
+using Serilog;
 
 namespace Melodroid_2.MidiMakers.TonalCoverComposer;
 
@@ -23,6 +24,10 @@ public class TonalCoverComposer
         Tet12ChromaMask firstChromaMask = new(allLcm8Chromas.RandomElement()); // Take random subset        
         Dictionary<int, bool> keyOnOff = ChromaToTriadMidi(firstChromaMask, InitialFundamental); // create voicing
 
+        Log.Information($"--- TimeEvent {0} ---");
+        Log.Information($"{nameof(firstChromaMask)}: {firstChromaMask.Mask.Bit12IntToIntervalString()}");
+        Log.Information($"Voicing: {string.Join(" ", keyOnOff.Keys)}");
+
         MidiOnOff firstMidiOnOff = new(keyOnOff); // select on keys for first event
         TonalSet firstTonalSet = new(firstChromaMask);
         TonalCover firstTonalCover = new(new([firstTonalSet]));
@@ -31,9 +36,11 @@ public class TonalCoverComposer
 
         for (int i = 1; i < TotalTimeEvents; i++)
         {
+            Log.Information($"--- TimeEvent {i} ---");
             TimeEvent previousTimeEvent = TimeEvents.Last();
             // take random tonal set from previous time event
             TonalSet previousTonalSet = previousTimeEvent.TonalCover.TonalSets.RandomElement();
+            Log.Information($"{nameof(previousTonalSet)}: {previousTonalSet.ChromaMask.Mask.Bit12IntToIntervalString()}");
 
             // select random lcm factor from random fundamental from selected tonal set
             Dictionary<int, List<int>> maskLCMs = previousTonalSet.ChromaMask.GetAllMaskLCMs(); // lcms implicitly capped
@@ -47,12 +54,14 @@ public class TonalCoverComposer
             int fundamentalShift = maskLCMs.Keys.ToList().RandomElement();
             int maskLCM = maskLCMs[fundamentalShift].RandomElement();
             int lcmFactor = Utils.Factorise(maskLCM).RandomElement();
+            Log.Information($"{maskLCM}@{fundamentalShift}:{lcmFactor}");
 
             // select random new tonal set sharing factor at fundamental
             TonalSet tonalSetWithFactor = // gets sets with factor at root position
                 TonalSet.GetTonalSetsWithFactor(lcmFactor).RandomElement();
             // shift mask to place root at fundamental shift
             TonalSet newTonalSet = new(tonalSetWithFactor.ChromaMask.Mask << fundamentalShift);
+            Log.Information($"{nameof(newTonalSet)}: {newTonalSet.ChromaMask.Mask.Bit12IntToIntervalString()}");
 
             // create new tonal cover from these two sets
             TonalCover newTonalCover = new([previousTonalSet, newTonalSet]);

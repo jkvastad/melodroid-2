@@ -43,6 +43,8 @@ public struct Bit12Int
         return sb.ToString();
     }
 
+    public readonly string Bit12IntToIntervalString() => Bit12IntToIntervalString(this);
+
     public static HashSet<int> Bit12IntToIntervals(Bit12Int binaryKeySet)
     {
         HashSet<int> intervals = new();
@@ -113,4 +115,6 @@ public struct Bit12Int
     {
         return Convert.ToString(_value, 2).PadLeft(12, '0');
     }
+
+
 }
