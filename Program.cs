@@ -3,6 +3,7 @@ using Melodroid_2.LCMs;
 using Melodroid_2.MidiMakers;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
+using Serilog;
 using System.Collections.Immutable;
 using static Melodroid_2.MusicUtils.MusicTheory;
 using static Melodroid_2.MusicUtils.Utils;
@@ -189,11 +190,18 @@ public class Program
         //foreach (var set in sets)
         //    Console.WriteLine(set.ChromaMask.Mask);
 
-        TonalCoverComposer composer = new();
-        composer.Compose();
-        string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
-        string fileName = "tonal_composer_test";
-        var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
-        NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
+        //TonalCoverComposer composer = new();
+        //composer.Compose();
+        //string folderPath = "E:\\Documents\\Reaper Projects\\Melodroid\\MIDI_write_testing\\TonalCoverComposer";
+        //string fileName = "tonal_composer_test";
+        //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        //NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
+
+        Log.Logger = new LoggerConfiguration()
+        .WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
+
+        Log.Information("Test1");
+        Log.Information("Test2");
     }
 }
