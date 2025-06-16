@@ -105,17 +105,34 @@ public class ChromaComposer
     public static List<Note> NotesToVoicing(List<Note> rawNotes, int smallestInterval = 2)
     {
         List<Note> voicedNotes = [];
-        var sortedNotes = rawNotes.OrderBy(note => note.NoteNumber);
+        var sortedNotes = rawNotes.OrderBy(note => note.NoteNumber).ToList();
         int currentNoteNumber = sortedNotes.First().NoteNumber;
+        List<int> noteNumbers = [];
         foreach (var note in sortedNotes)
         {
-            SevenBitNumber noteNumber = note.NoteNumber;
-            if (Math.Abs(currentNoteNumber - note.NoteNumber) < smallestInterval)
-                noteNumber = new((byte)((byte)noteNumber + 12));
+            int noteNumber = note.NoteNumber;
+            if (Math.Abs(currentNoteNumber - noteNumber) < smallestInterval)
+            {
+                // decide up or down
+                int noteUp = noteNumber + 12;
+                int noteDown = noteNumber + 12;
+
+                List<int> noteNumbersUp = [.. noteNumbers, noteUp];
+                List<int> noteNumbersDown = [.. noteNumbers, noteDown];
+                if (CountTriads(noteNumbersUp) > CountTriads(noteNumbersDown))
+                    noteNumber = noteUp;
+                else
+                    noteNumber = noteDown;
+            }
             else
                 currentNoteNumber = note.NoteNumber;
+            noteNumbers.Add(noteNumber);
+        }
 
-            Note voicedNote = new(noteNumber)
+        for (int i = 0; i < sortedNotes.Count; i++)
+        {
+            Note note = sortedNotes[i];
+            Note voicedNote = new((SevenBitNumber)noteNumbers[i])
             {
                 Time = note.Time, // at what ticks does note start
                 Length = note.Length, // for how long does note keep going
@@ -123,6 +140,21 @@ public class ChromaComposer
             };
             voicedNotes.Add(voicedNote);
         }
+
         return voicedNotes;
+    }
+
+    public static int CountTriads(List<int> notes)
+    {
+        int triads = 0;
+        var sortedNotes = notes.Order();
+        int previousNoteNumber = sortedNotes.First();
+        foreach (var noteNumber in sortedNotes)
+        {
+            if (Math.Abs(previousNoteNumber - noteNumber) > 2)
+                triads++;
+            previousNoteNumber = noteNumber;
+        }
+        return triads;
     }
 }
