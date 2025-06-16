@@ -1,6 +1,7 @@
 ﻿using Fractions;
 using Melodroid_2.LCMs;
 using Melodroid_2.MidiMakers;
+using Melodroid_2.MidiMakers.ChromaComposer;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using Serilog;
@@ -132,11 +133,11 @@ public class Program
         //    Console.WriteLine(consoleRow);
 
 
-        // Octave Sweep Test                
+        //// Octave Sweep Test                
         //var FractionsToSweep = new List<double>()
         //{
         ////(double)Unison,
-        //(double)MinorSecond,
+        ////(double)MinorSecond,
         ////(double)MajorSecond,
         ////(double)MinorThird,
         //(double)MajorThird,
@@ -144,9 +145,9 @@ public class Program
         ////Tritone,
         ////(double)PerfectFifth,
         ////(double)MinorSixth,
-        //(double)MajorSixth,
+        ////(double)MajorSixth,
         ////(double)MinorSeventh,
-        ////(double)MajorSeventh
+        //(double)MajorSeventh
         //};
         //List<Fraction> ClusterTargets = GoodFractions;
         //double clusterWidth = 0.013;
@@ -175,12 +176,39 @@ public class Program
         .WriteTo.File(@"D:\Projects\Code\Melodroid 2\logs\log.txt", rollingInterval: RollingInterval.Infinite)
         .CreateLogger();
 
-        TonalCoverComposer composer = new();
+        //TonalCoverComposer composer = new();
+        ChromaComposer composer = new();
         composer.Compose();
-        string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
-        string fileName = "tonal_composer_test";
-        var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
-        NotesToMidi.WriteNotesToMidi(midiNotes, folderPath, fileName, bpm: 60, overWrite: true);
+        //string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
+        string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\ChromaComposer";
+        //string fileName = "tonal_composer_test";
+        string fileName = "chroma_composer_test";
+        //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        NotesToMidi.WriteNotesToMidi(composer.Notes, folderPath, fileName, bpm: 60, overWrite: true);
+
+        // Fix error in chroma composer - perhaps simply asking of root for wrong mask? Seems like candidateSet.ChromaMask).First() prints post rotation but it shouldnt
+        //var lcms = Tet12ChromaMask.GetMaskRootLCMs(new(0b100001010000));
+        //Bit12Int chord = new(0b000010000100);        
+        //Console.WriteLine(chord);
+        //var lcms = Tet12ChromaMask.GetAllMaskLCMs(chord);
+        //foreach (var keyPair in lcms)
+        //{
+        //    Console.WriteLine($"{keyPair.Key}: {string.Join(" ", keyPair.Value)}");
+        //}
+        //chord <<= 2;
+        //Console.WriteLine(chord);
+        //lcms = Tet12ChromaMask.GetAllMaskLCMs(chord);
+        //foreach (var keyPair in lcms)
+        //{
+        //    Console.WriteLine($"{keyPair.Key}: {string.Join(" ", keyPair.Value)}");
+        //}
+
+        //var sets = TonalSet.GetTonalSetsWithFactor(4, minSubSetSize: 4, maxLCM: 12);
+        //foreach (var set in sets)
+        //{
+        //    //var shiftedMask = set.ChromaMask.Mask << 2;
+        //    Console.WriteLine($"{set.ChromaMask}: {string.Join(" ", Tet12ChromaMask.GetMaskRootLCMs(set.ChromaMask))}");
+        //}
 
 
         //// TODO why does 1 4 9 give lcm 60 at 0 for GetTonalSetsWithFactor(2) but 0 with GetAllMaskLCMs()? Bug in get tonal sets, flipped chroma masks wrong way

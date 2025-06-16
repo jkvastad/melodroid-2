@@ -20,12 +20,12 @@ public class TonalCoverComposer
 
     public void Compose()
     {
-        List<int> allLcm8Chromas = Tet12ChromaMask.LCM8.GetSetBitCombinations(); // Get all tonal set subsets
+        var allLcm8Chromas = Tet12ChromaMask.LCM8.GetSetBitCombinations(); // Get all tonal set subsets
         Tet12ChromaMask firstChromaMask = new(allLcm8Chromas.RandomElement()); // Take random subset        
-        Dictionary<int, bool> keyOnOff = ChromaToTriadMidi(firstChromaMask, InitialFundamental); // create voicing
+        Dictionary<int, bool> keyOnOff = Tet12ChromaMask.ChromaToTriadMidi(firstChromaMask, InitialFundamental); // create voicing
 
         Log.Information($"--- TimeEvent {0} ---");
-        Log.Information($"{nameof(firstChromaMask)}: {firstChromaMask.Mask.Bit12IntToIntervalString()}");
+        Log.Information($"{nameof(firstChromaMask)}: {firstChromaMask.Mask.ToIntervalString()}");
         Log.Information($"Voicing: {string.Join(" ", keyOnOff.Keys)}");
 
         MidiOnOff firstMidiOnOff = new(keyOnOff); // select on keys for first event
@@ -45,7 +45,7 @@ public class TonalCoverComposer
             TimeEvent previousTimeEvent = TimeEvents.Last();
             // take random tonal set from previous time event
             TonalSet previousTonalSet = previousTimeEvent.TonalCover.TonalSets.RandomElement();
-            Log.Information($"{nameof(previousTonalSet)}: {previousTonalSet.ChromaMask.Mask.Bit12IntToIntervalString()}");
+            Log.Information($"{nameof(previousTonalSet)}: {previousTonalSet.ChromaMask.Mask.ToIntervalString()}");
 
             // select random lcm factor from random fundamental from selected tonal set
             Dictionary<int, List<int>> maskLCMs = previousTonalSet.ChromaMask.GetAllMaskLCMs(); // lcms implicitly capped
@@ -66,7 +66,7 @@ public class TonalCoverComposer
                 TonalSet.GetTonalSetsWithFactor(lcmFactor).RandomElement();
             // shift mask to place root at fundamental shift - e.g. 4@7: 0b000010010001 (C Major 4@0) << 7 == 0b100010000100 (Gmajor 4@7)            
             TonalSet newTonalSet = new(tonalSetWithFactor.ChromaMask.Mask << fundamentalShift);
-            Log.Information($"{nameof(newTonalSet)}: {newTonalSet.ChromaMask.Mask.Bit12IntToIntervalString()}");
+            Log.Information($"{nameof(newTonalSet)}: {newTonalSet.ChromaMask.Mask.ToIntervalString()}");
 
             // create new tonal cover from these two sets
             TonalCover newTonalCover = new([previousTonalSet, newTonalSet]);
@@ -96,7 +96,7 @@ public class TonalCoverComposer
             // turn on new keys not present in old mask
             Tet12ChromaMask keysOnlyInNewMask = new(keysInAnyMask.Mask ^ oldCoverMask.Mask); // if keys in old cover mask, xor to false
             // all masks use initial fundamental as root key
-            var newKeys = ChromaToTriadMidi(keysOnlyInNewMask, InitialFundamental);
+            var newKeys = Tet12ChromaMask.ChromaToTriadMidi(keysOnlyInNewMask, InitialFundamental);
             foreach (var keyPair in newKeys)
                 newMidiOnOff.KeyOnOff[keyPair.Key] = keyPair.Value;
 
@@ -112,45 +112,6 @@ public class TonalCoverComposer
             TimeEvents.Add(timeEvent);
         }
 
-    }
-
-    /// <summary>
-    /// Tries to voice chroma mask as triads with fundamental as root
-    /// </summary>
-    /// <param name="mask"></param>
-    /// <param name="maskFundamental"></param>
-    /// <returns></returns>
-    public static Dictionary<int, bool> ChromaToTriadMidi(Tet12ChromaMask mask, int maskFundamental)
-    {
-        // no chroma no midi
-        if (mask.Mask == 0)
-            return [];
-        // Go through all intervals
-        var intervals = mask.ChromaToIntervals();
-        List<int> shiftedIntervals = [];
-        int previousInterval = intervals.First();
-        shiftedIntervals.Add(previousInterval);
-
-        for (int i = 1; i < intervals.Count; i++)
-        {
-            // any interval closer than 3 steps gets pushed up an octave - mostly good enough
-            if (intervals[i] - previousInterval < 3)
-            {
-                int shiftedInterval = intervals[i] + 12;
-                shiftedIntervals.Add(shiftedInterval);
-            }
-            else
-            {
-                shiftedIntervals.Add(intervals[i]);
-                previousInterval = intervals[i];
-            }
-        }
-
-        Dictionary<int, bool> midi = [];
-        foreach (var interval in shiftedIntervals)
-            midi[interval + maskFundamental] = true;
-
-        return midi;
     }
 
     public static Bit12Int MidiToChroma(int midiKey)

@@ -1,6 +1,7 @@
 ﻿using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
+//using Melanchall.DryWetMidi.MusicTheory;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 
 namespace Melodroid_2.MidiMakers;
@@ -18,6 +19,13 @@ namespace Melodroid_2.MidiMakers;
 /// </summary>
 public class NotesToMidi
 {
+    public static Note SilentNote { get; private set; } = new Note((SevenBitNumber)0)
+    {
+        Time = 0, // Set time to truncate with zero note
+        Length = 1, // for how long does note keep going
+        Velocity = (SevenBitNumber)0
+    };
+
     // Note example, notes are defined in ticks start, duration and velocity
     //  new (NoteName.A, 4)
     //        {
@@ -26,7 +34,7 @@ public class NotesToMidi
     //            Velocity = (SevenBitNumber)0}
     // based on https://melanchall.github.io/drywetmidi/index.html#getting-started
     public static void WriteNotesToMidi(
-        List<Note> midiNotes,
+        List<Note> notes,
         string folderPath,
         string fileName,
         short ticksPerQuarterNote = 1,
@@ -40,12 +48,12 @@ public class NotesToMidi
         TrackChunk trackChunk = new TrackChunk();
         using (var notesManager = trackChunk.ManageNotes())
         {
-            var notes = notesManager.Objects;
+            var managerNotes = notesManager.Objects;
             //add notes                       
-            foreach (var note in midiNotes)
+            foreach (var note in notes)
             {
-                notes.Add(note);
-            }
+                managerNotes.Add(note);
+            }            
         }
 
         midiFile.Chunks.Add(trackChunk);
@@ -82,15 +90,7 @@ public class NotesToMidi
         }
         List<int> liveNoteNumbers = liveNotes.Keys.ToList();
         foreach (var noteNumber in liveNoteNumbers)
-            AddNote(noteNumber);
-
-        // drywetmidi truncates last note for reasons
-        notes.Add(new Note((SevenBitNumber)0)
-        {
-            Time = timeScaling * currentTick + 1, //truncate this zero note
-            Length = 0, // for how long does note keep going
-            Velocity = (SevenBitNumber)0
-        });
+            AddNote(noteNumber);               
 
         return notes;
 

@@ -50,8 +50,8 @@ public class TonalSet
     {
         // Get all tonal sets
         // currently only working with lcm8
-        List<int> allLcm8Subsets = Tet12ChromaMask.LCM8.GetSetBitCombinations()
-            .Where(mask => BitOperations.PopCount((uint)mask) >= minSubSetSize).ToList();
+        var allLcm8Subsets = Tet12ChromaMask.LCM8.GetSetBitCombinations()
+            .Where(mask => BitOperations.PopCount((uint)(int)mask) >= minSubSetSize).ToList();
 
         // calculate lcm for each subset
         List<TonalSet> tonalSetsWithFactor = [];

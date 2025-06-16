@@ -1,4 +1,5 @@
 ﻿using Fractions;
+using Melanchall.DryWetMidi.Interaction;
 using Melodroid_2.LCMs;
 
 namespace Melodroid_2.MusicUtils;
@@ -40,18 +41,22 @@ public class Tet12ChromaMask
     /// <param name="chromaMask"></param>
     /// <returns> Dictionary with keys being root position, e.g. 1 for lcm after rotating mask right once,
     /// and values being all lcms for that root. Lcm 0 signifies undefined lcm (e.g. tritone inclusion) </returns>
-    public static Dictionary<int, List<int>> GetAllMaskLCMs(Tet12ChromaMask chromaMask, int maxLcm = 12)
+    public static Dictionary<int, List<int>> GetAllMaskLCMs(Bit12Int chromaMask, int maxLcm = 12)
     {
         Dictionary<int, List<int>> lcmsAtRoot = new();
         for (int root = 0; root < 12; root++)
         {
-            Tet12ChromaMask rotatedMask = new(chromaMask.Mask >> root);
+            Tet12ChromaMask rotatedMask = new(chromaMask >> root);
             lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask).Where(lcm => lcm <= 12).ToList();
         }
         return lcmsAtRoot;
     }
 
-    public Dictionary<int, List<int>> GetAllMaskLCMs(int maxLcm = 12) => GetAllMaskLCMs(this);
+    public static Dictionary<int, List<int>> GetAllMaskLCMs(Tet12ChromaMask chromaMask, int maxLcm = 12)
+        => GetAllMaskLCMs(chromaMask.Mask, maxLcm);
+
+    public Dictionary<int, List<int>> GetAllMaskLCMs(int maxLcm = 12)
+        => GetAllMaskLCMs(this, maxLcm);
 
 
     /// <summary>
@@ -93,28 +98,27 @@ public class Tet12ChromaMask
 
     public static List<Tet12ChromaMask> GetAllMaskSubsets(Tet12ChromaMask mask)
     {
-        List<int> allMaskBitCombinations = GetSetBitCombinations((int)mask.Mask);
-        return allMaskBitCombinations.Select(bits => new Tet12ChromaMask(new(bits))).ToList();
+        var allMaskBitCombinations = GetSetBitCombinations(mask.Mask);
+        return allMaskBitCombinations.Select(bits => new Tet12ChromaMask(bits)).ToList();
     }
 
     /// <summary>
     /// Get all non-zero bit combinations
     /// </summary>
-    /// <param name="n"></param>
-    /// <param name="maxBits"></param>
+    /// <param name="mask"></param>    
     /// <returns></returns>
-    public static List<int> GetSetBitCombinations(int n, int maxBits = 12)
+    public static List<Bit12Int> GetSetBitCombinations(Bit12Int mask)
     {
         List<int> setBitPositions = new List<int>();
 
         // Find positions of set bits
-        for (int i = 0; i < maxBits; i++)
+        for (int i = 0; i < 12; i++)
         {
-            if ((n & (1 << i)) != 0)
+            if ((mask & (1 << i)) != 0)
                 setBitPositions.Add(i);
         }
 
-        List<int> combinations = new List<int>();
+        List<Bit12Int> combinations = new();
         int totalSubsets = 1 << setBitPositions.Count;
 
         // Generate all non-zero subsets - a subset is some combination of set bit positions
@@ -133,7 +137,7 @@ public class Tet12ChromaMask
         return combinations;
     }
 
-    public List<int> GetSetBitCombinations() => GetSetBitCombinations((int)Mask, 12);
+    public List<Bit12Int> GetSetBitCombinations() => GetSetBitCombinations(Mask);
 
     public static List<List<T>> GetCombinations<T>(List<List<T>> jaggedArray)
     {
@@ -168,6 +172,45 @@ public class Tet12ChromaMask
         }
         return intervals;
     }
+
+    /// <summary>
+    /// Tries to voice chroma mask as triads with fundamental as root
+    /// </summary>
+    /// <param name="mask"></param>
+    /// <param name="maskFundamental"></param>
+    /// <returns></returns>
+    public static Dictionary<int, bool> ChromaToTriadMidi(Tet12ChromaMask mask, int maskFundamental)
+    {
+        // no chroma no midi
+        if (mask.Mask == 0)
+            return [];
+        // Go through all intervals
+        var intervals = mask.ChromaToIntervals();
+        List<int> shiftedIntervals = [];
+        int previousInterval = intervals.First();
+        shiftedIntervals.Add(previousInterval);
+
+        for (int i = 1; i < intervals.Count; i++)
+        {
+            // any interval closer than 3 steps gets pushed up an octave - mostly good enough
+            if (intervals[i] - previousInterval < 3)
+            {
+                int shiftedInterval = intervals[i] + 12;
+                shiftedIntervals.Add(shiftedInterval);
+            }
+            else
+            {
+                shiftedIntervals.Add(intervals[i]);
+                previousInterval = intervals[i];
+            }
+        }
+
+        Dictionary<int, bool> midi = [];
+        foreach (var interval in shiftedIntervals)
+            midi[interval + maskFundamental] = true;
+
+        return midi;
+    }    
 
     public override string ToString()
     {
