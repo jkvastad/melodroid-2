@@ -102,30 +102,45 @@ public class ChromaComposer
     /// </summary>
     /// <param name="rawNotes"></param>
     /// <returns></returns>
+    static int tick = 0;
     public static List<Note> NotesToVoicing(List<Note> rawNotes, int smallestInterval = 2)
     {
         List<Note> voicedNotes = [];
         var sortedNotes = rawNotes.OrderBy(note => note.NoteNumber).ToList();
-        int currentNoteNumber = sortedNotes.First().NoteNumber;
+        int previousNoteNumber = 0;
         List<int> noteNumbers = [];
+        List<int> naiveNoteNumbers = sortedNotes.Select(note => (int)note.NoteNumber).ToList();
         foreach (var note in sortedNotes)
         {
             int noteNumber = note.NoteNumber;
-            if (Math.Abs(currentNoteNumber - noteNumber) < smallestInterval)
+            if (Math.Abs(previousNoteNumber - noteNumber) < smallestInterval)
             {
                 // decide up or down
                 int noteUp = noteNumber + 12;
-                int noteDown = noteNumber + 12;
+                int noteDown = noteNumber - 12;
 
                 List<int> noteNumbersUp = [.. noteNumbers, noteUp];
                 List<int> noteNumbersDown = [.. noteNumbers, noteDown];
                 if (CountTriads(noteNumbersUp) > CountTriads(noteNumbersDown))
                     noteNumber = noteUp;
                 else
-                    noteNumber = noteDown;
+                {
+                    // tie breaker, create smallest chord spread relative naive numbers
+                    // Sometimes one has to look at the upcoming note rather than the proceeding one to create a better voicing
+                    // Perhaps it is about creating the smallest note spread without having explicit semitones
+                    
+                    noteNumbersUp = [.. naiveNoteNumbers, noteUp];
+                    noteNumbersDown = [.. naiveNoteNumbers, noteDown];
+                    int upDiff = noteNumbersUp.Max() - noteNumbersUp.Min();
+                    int downDiff = noteNumbersDown.Max() - noteNumbersDown.Min();                    
+                    if (upDiff < downDiff)
+                        noteNumber = noteUp;
+                    else
+                        noteNumber = noteDown;
+                }
             }
             else
-                currentNoteNumber = note.NoteNumber;
+                previousNoteNumber = note.NoteNumber;
             noteNumbers.Add(noteNumber);
         }
 
@@ -141,6 +156,7 @@ public class ChromaComposer
             voicedNotes.Add(voicedNote);
         }
 
+        tick++;
         return voicedNotes;
     }
 
@@ -151,7 +167,8 @@ public class ChromaComposer
         int previousNoteNumber = sortedNotes.First();
         foreach (var noteNumber in sortedNotes)
         {
-            if (Math.Abs(previousNoteNumber - noteNumber) > 2)
+            int diff = Math.Abs(previousNoteNumber - noteNumber);
+            if (diff == 3 || diff == 4)
                 triads++;
             previousNoteNumber = noteNumber;
         }
