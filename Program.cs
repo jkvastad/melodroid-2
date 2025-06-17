@@ -2,6 +2,7 @@
 using Melodroid_2.LCMs;
 using Melodroid_2.MidiMakers;
 using Melodroid_2.MidiMakers.ChromaComposer;
+using Melodroid_2.MidiMakers.RandomComposer;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using Serilog;
@@ -177,13 +178,22 @@ public class Program
         .CreateLogger();
 
         //TonalCoverComposer composer = new();
-        ChromaComposer composer = new();
-        composer.Compose();
         //string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\TonalCoverComposer";
-        string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\ChromaComposer";
+        //composer.Compose();
         //string fileName = "tonal_composer_test";
-        string fileName = "chroma_composer_test";
         //var midiNotes = NotesToMidi.TimeEventsToNotes(composer.TimeEvents);
+        //NotesToMidi.WriteNotesToMidi(composer.Notes, folderPath, fileName, bpm: 60, overWrite: true);
+
+        //ChromaComposer composer = new();
+        //composer.Compose();
+        //string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\ChromaComposer";
+        //string fileName = "chroma_composer_test";
+        //NotesToMidi.WriteNotesToMidi(composer.Notes, folderPath, fileName, bpm: 60, overWrite: true);
+
+        RandomComposer composer = new();
+        composer.Compose();
+        string folderPath = @"E:\Documents\Reaper Projects\Melodroid\MIDI_write_testing\ChromaComposer";
+        string fileName = "random_composer_test";
         NotesToMidi.WriteNotesToMidi(composer.Notes, folderPath, fileName, bpm: 60, overWrite: true);
 
         // Fix error in chroma composer - perhaps simply asking of root for wrong mask? Seems like candidateSet.ChromaMask).First() prints post rotation but it shouldnt

@@ -1,70 +1,50 @@
 ﻿using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Interaction;
 using Melodroid_2.LCMs;
-using Melodroid_2.MidiMakers.TonalCoverComposer;
-using Melodroid_2.MusicUtils;
 using Serilog;
-using System;
-namespace Melodroid_2.MidiMakers.ChromaComposer;
 
-public class ChromaComposer
+namespace Melodroid_2.MidiMakers.RandomComposer;
+
+/// <summary>
+/// Creates equally distributed note clusters
+/// </summary>
+public class RandomComposer
 {
     public List<Note> Notes { get; internal set; } = [];
     public int TotalChords = 256;
     public int MidiFundamental = 60; // C4, middle C
+    public int MaxNotesPerChord = 5; // Cannot exceed 12
+    public int MinNotesPerChord = 2;
     public Random Random = new();
 
     public void Compose()
     {
-        int currentTick = 0;
+        if (MaxNotesPerChord > 12)
+            throw new ArgumentException($"{nameof(MaxNotesPerChord)} cannot exceed 12");
         int relativeTickLength = 1;
-        Log.Information($"--- {nameof(currentTick)}: {currentTick} ---");
 
-        int maxMaskLcm = 12; // maxLcm used when finding chord lcms
-
-        var allLcm8Masks = Tet12ChromaMask.LCM8.GetSetBitCombinations();
-        Bit12Int previousChord = allLcm8Masks.RandomElement();
-        Notes.AddRange(ChromaToNotes(previousChord, MidiFundamental, currentTick, relativeTickLength));
-        Log.Information($"{nameof(previousChord)}: {previousChord.ToIntervalString()}");
-
-        for (int tick = 1; tick < TotalChords; tick++)
+        for (int tick = 0; tick < TotalChords; tick++)
         {
-            currentTick = tick;
-            Log.Information($"--- {nameof(currentTick)}: {currentTick} ---");
-            // Select non-empty fundamental offset among possible chord lcms
-            Dictionary<int, List<int>> previousChordLcms = Tet12ChromaMask.GetAllMaskLCMs(previousChord, maxMaskLcm);
-            int fundamentalOffset = previousChordLcms.Keys.Where(key => previousChordLcms[key].Count > 0).ToList().RandomElement();
-            Log.Information($"{nameof(fundamentalOffset)}: {fundamentalOffset}");
+            // get random chroma
+            int notesInChord = Random.Next(MinNotesPerChord, MaxNotesPerChord + 1);
+            HashSet<int> chromaNotes = [];
+            while (chromaNotes.Count < notesInChord)
+            {
+                int chromaNote = Random.Next(0, 12);
+                chromaNotes.Add(chromaNote);
+            }
+            int chordChroma = 0;
+            foreach (int chromaNote in chromaNotes)
+                chordChroma += 1 << chromaNote;
 
-            // Select lcm for offset
-            int previousChordLcm = previousChordLcms[fundamentalOffset].RandomElement();
-            Log.Information($"{nameof(previousChordLcm)}: {previousChordLcm}");
-
-            // Select factor from previous chord lcm
-            var lcmPrimes = Utils.Factorise(previousChordLcm);
-            int lcmFactor = lcmPrimes
-                .OrderBy(x => Random.Next()) // sort randomly
-                .Take(Random.Next(1, lcmPrimes.Count + 1)) // take random number of primes - at least one, at most all
-                .Aggregate(1, (acc, val) => acc * val); // create lcm factor
-            Log.Information($"{nameof(lcmFactor)}: {lcmFactor}");
-
-            // Get all tonal sets with masks sharing lcm factor at fundamental with previous mask
-            List<TonalSet> candidateSets = TonalSet.GetTonalSetsWithFactor(lcmFactor, minSubSetSize: 2, maxLCM: maxMaskLcm); // masks in root position            
-            TonalSet candidateSet = candidateSets.RandomElement();
-            // Shift mask to offset position - e.g. 8@0 0b10010001 << 2 0b1001000100 is 8@2
-            Tet12ChromaMask candidateMask = candidateSet.ChromaMask;
-            var nextChord = candidateMask.Mask << fundamentalOffset;
-            Log.Information($"{nameof(nextChord)}: {Tet12ChromaMask.GetMaskRootLCMs(candidateMask).Order().First()}@{fundamentalOffset} {nextChord.ToIntervalString()}");
-
-            // Use new root position mask to create notes
-            Notes.AddRange(ChromaToNotes(nextChord, MidiFundamental, currentTick, relativeTickLength));
-            previousChord = nextChord;
+            Bit12Int chord = new(chordChroma);
+            Notes.AddRange(ChromaToNotes(chord, MidiFundamental, tick, relativeTickLength));
         }
 
         // pad with zero note, wetdry truncates last tick for reasons
         Notes.Add(new Note((SevenBitNumber)0)
         {
-            Time = currentTick + 1, // Set time to truncate with zero note
+            Time = TotalChords, // Set time to truncate with zero note
             Length = 1, // for how long does note keep going
             Velocity = (SevenBitNumber)0
         });
