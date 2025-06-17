@@ -47,7 +47,7 @@ public class Tet12ChromaMask
         for (int root = 0; root < 12; root++)
         {
             Tet12ChromaMask rotatedMask = new(chromaMask >> root);
-            lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask).Where(lcm => lcm <= 12).ToList();
+            lcmsAtRoot[root] = GetMaskRootLCMs(rotatedMask).Where(lcm => lcm <= maxLcm).ToList();
         }
         return lcmsAtRoot;
     }
@@ -210,7 +210,7 @@ public class Tet12ChromaMask
             midi[interval + maskFundamental] = true;
 
         return midi;
-    }    
+    }
 
     public override string ToString()
     {

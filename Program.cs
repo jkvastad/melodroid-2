@@ -240,10 +240,48 @@ public class Program
 
         foreach (var cardinality in origins.Keys)
         {
+            // print header
             Console.WriteLine($"--- Cardinality: {cardinality} ---");
+            Console.Write("".PadLeft(3 * cardinality)); // 2 chars for digits, one for space
+            for (int i = 0; i < 12; i++)
+                Console.Write($"{i,-2} ");
+            Console.WriteLine();
+
             foreach (var mask in origins[cardinality])
             {
-                Console.WriteLine($"{mask.ToIntervalString()}");
+                // print mask
+                Console.Write($"{mask.ToIntervalString()}".PadRight(3 * cardinality));
+                // print mask rows
+                var maskLcms = Tet12ChromaMask.GetAllMaskLCMs(mask, maxLcm: 15);
+                int rows = maskLcms.Values.MaxBy(lcms => lcms.Count)!.Count;
+                // write lcm at each fundamental
+                int paddingMultiples = 0;
+                foreach (var key in maskLcms.Keys)
+                {
+                    if (maskLcms[key].Count > 0)
+                    {
+                        Console.Write($"{maskLcms[key][0],-2} ".PadLeft((paddingMultiples + 1) * 3));
+                        paddingMultiples = 0;
+                    }
+                    else
+                        paddingMultiples++;
+                }
+                if (rows > 1)
+                {
+                    Console.WriteLine();
+                    Console.Write("".PadRight(3 * cardinality));
+                    foreach (var key in maskLcms.Keys)
+                    {
+                        if (maskLcms[key].Count > 1)
+                        {
+                            Console.Write($"{maskLcms[key][1],-2} ".PadLeft((paddingMultiples + 1) * 3));
+                            paddingMultiples = 0;
+                        }
+                        else
+                            paddingMultiples++;
+                    }
+                }
+                Console.WriteLine();
             }
         }
     }
