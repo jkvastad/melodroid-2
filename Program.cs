@@ -196,16 +196,55 @@ public class Program
         //string fileName = "random_composer_test";
         //NotesToMidi.WriteNotesToMidi(composer.Notes, folderPath, fileName, bpm: 60, overWrite: true);
 
-        var targets = CalculateAllChordTargets();
 
-        foreach (var target in targets)
+        //var targets = CalculateAllChordTargets();
+        //foreach (var target in targets)
+        //{
+        //    Console.WriteLine($"--- Factor: {target.Key} ---");
+        //    foreach (var mask in target.Value)
+        //    {
+        //        Console.WriteLine($"{mask.ToIntervalString()}");
+        //    }
+        //    Console.WriteLine();
+        //}
+
+        //Bit12Int minorC = new Bit12Int(0b000010001001);
+        //Dictionary<int, List<int>> targets = Tet12ChromaMask.GetAllMaskLCMs(minorC);
+        //foreach (var target in targets)
+        //{
+        //    if (target.Value.Count == 0)
+        //        continue;
+        //    Console.WriteLine($"--- Key: {target.Key} ---");
+        //    foreach (var lcm in target.Value)
+        //    {
+        //        Console.WriteLine($"{lcm}");
+        //    }
+        //    Console.WriteLine();
+        //}
+
+        //Bit12Int majorGSharp = new Bit12Int(0b000100001001);
+        //Dictionary<int, List<int>> targets2 = Tet12ChromaMask.GetAllMaskLCMs(majorGSharp);
+        //foreach (var target2 in targets2)
+        //{
+        //    if (target2.Value.Count == 0)
+        //        continue;
+        //    Console.WriteLine($"--- Key: {target2.Key} ---");
+        //    foreach (var lcm in target2.Value)
+        //    {
+        //        Console.WriteLine($"{lcm}");
+        //    }
+        //    Console.WriteLine();
+        //}
+
+        Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateAllChordOrigins();
+
+        foreach (var cardinality in origins.Keys)
         {
-            Console.WriteLine($"--- Factor: {target.Key} ---");
-            foreach (var mask in target.Value)
+            Console.WriteLine($"--- Cardinality: {cardinality} ---");
+            foreach (var mask in origins[cardinality])
             {
                 Console.WriteLine($"{mask.ToIntervalString()}");
             }
-            Console.WriteLine();
         }
     }
 }

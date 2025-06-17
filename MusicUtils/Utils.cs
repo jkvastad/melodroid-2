@@ -132,6 +132,10 @@ public static class Utils
         return list[rng.Next(list.Count)];
     }
 
+    /// <summary>
+    /// Calculates all chroma masks having an lcm factor at root position, mapped by factor
+    /// </summary>
+    /// <returns></returns>
     public static Dictionary<int, HashSet<Bit12Int>> CalculateAllChordTargets()
     {
         int[] targetFactors = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
@@ -149,5 +153,45 @@ public static class Utils
                     chordTargetsByFactor[lcm].Add(chromaMask);
         }
         return chordTargetsByFactor;
+    }
+
+    /// <summary>
+    /// Calculates all root position chroma masks having a legal full match lcm, mapped by cardinality
+    /// </summary>
+    /// <returns></returns>
+    public static Dictionary<int, HashSet<Bit12Int>> CalculateAllChordOrigins()
+    {
+        int[] legalLcms = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
+        Dictionary<int, HashSet<Bit12Int>> chordOriginsByCardinality = [];
+        for (int i = 0; i < 12; i++)
+            chordOriginsByCardinality[i] = [];
+
+        // Go through all keys, if root LCM matches legal lcm then map mask to cardinality
+        for (int i = 0; i < BigInteger.Pow(2, 12); i++)
+        {
+            Bit12Int chromaMask = new(i);
+            
+            // only consider root positions
+            if ((chromaMask & 1) != 1)
+                continue;
+
+            // check if lcm is legal
+            var lcms = Tet12ChromaMask.GetMaskRootLCMs(chromaMask);
+            if (!lcms.Any(legalLcms.Contains))
+                continue;
+
+            // check if rotation is already present
+            List<Bit12Int> rotatedMasks = [];
+            for (int j = 0; j < 12; j++)
+                rotatedMasks.Add(chromaMask << j);
+
+            int cardinality = BitOperations.PopCount((uint)(int)chromaMask);
+            var cardinalMasks = chordOriginsByCardinality[cardinality];
+            if (rotatedMasks.Any(cardinalMasks.Contains))
+                continue;
+
+            chordOriginsByCardinality[cardinality].Add(chromaMask);
+        }
+        return chordOriginsByCardinality;
     }
 }
