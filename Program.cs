@@ -236,7 +236,7 @@ public class Program
         //    Console.WriteLine();
         //}
 
-        Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateAllChordOrigins();
+        Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateUniqueChordOrigins();
 
         foreach (var cardinality in origins.Keys)
         {

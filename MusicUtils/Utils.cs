@@ -156,10 +156,10 @@ public static class Utils
     }
 
     /// <summary>
-    /// Calculates all root position chroma masks having a legal full match lcm, mapped by cardinality
+    /// Calculates all unique root position chroma masks having a legal full match lcm, mapped by cardinality
     /// </summary>
     /// <returns></returns>
-    public static Dictionary<int, HashSet<Bit12Int>> CalculateAllChordOrigins()
+    public static Dictionary<int, HashSet<Bit12Int>> CalculateUniqueChordOrigins()
     {
         int[] legalLcms = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
         Dictionary<int, HashSet<Bit12Int>> chordOriginsByCardinality = [];
