@@ -1,7 +1,9 @@
 ﻿using Fractions;
+using Melodroid_2.LCMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -119,7 +121,7 @@ public static class Utils
                 commonPrimes.Add(prime1);
         if (commonPrimes.Count > 0)
             CommonFactor = commonPrimes.Aggregate((a, b) => a * b);
-        
+
         return CommonFactor;
     }
 
@@ -128,5 +130,24 @@ public static class Utils
     public static T RandomElement<T>(this IList<T> list)
     {
         return list[rng.Next(list.Count)];
+    }
+
+    public static Dictionary<int, HashSet<Bit12Int>> CalculateAllChordTargets()
+    {
+        int[] targetFactors = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
+        Dictionary<int, HashSet<Bit12Int>> chordTargetsByFactor = [];
+        foreach (var factor in targetFactors)
+            chordTargetsByFactor[factor] = [];
+
+        // Go through all keys, if root LCM matches then map mask to factor
+        for (int i = 0; i < BigInteger.Pow(2, 12); i++)
+        {
+            Bit12Int chromaMask = new(i);
+            var lcms = Tet12ChromaMask.GetMaskRootLCMs(chromaMask);
+            foreach (var lcm in lcms)
+                if (targetFactors.Contains(lcm))
+                    chordTargetsByFactor[lcm].Add(chromaMask);
+        }
+        return chordTargetsByFactor;
     }
 }
