@@ -352,7 +352,7 @@ public class Program
         int ogSubsetMin = 3;
         originCombinations = originCombinations.Where(comb => BitOperations.PopCount((uint)comb) >= ogSubsetMin).ToList();
 
-        int targetChordMaxSize = 5;
+        int targetChordMaxSize = 4;
         int targetChordMinSize = 2;
         Dictionary<int, HashSet<Bit12Int>> uniqueChords = Utils.CalculateUniqueChordOrigins();
         for (int cardinality = 0; cardinality < 12; cardinality++)
@@ -364,7 +364,7 @@ public class Program
             foreach (var chord in keypair.Value)
                 uniqueChordsToLcms[chord] = (Tet12ChromaMask.GetAllMaskLCMs(chord));
 
-        Dictionary<int, List<string>> output = [];
+        Dictionary<int, List<TET12ChordProgression>> output = [];
         for (int key = 0; key < 12; key++)
             output[key] = [];
 
@@ -389,22 +389,34 @@ public class Program
                             int rotatedChordRoot = (key - rotation + 12) % 12;
                             if (ogCombLcms[key].Count > 0 && chordLcms[rotatedChordRoot].Count > 0)
                             {
-                                string outputLine = $"{ogComb.ToIntervalString()} ({string.Join(", ", ogCombLcms[key])}) {rotatedChord.ToIntervalString()} ({string.Join(", ", chordLcms[rotatedChordRoot])})";
-                                output[key].Add(outputLine);
+                                TET12ChordProgression progression = new(ogComb, ogCombLcms[key], rotatedChord, chordLcms[rotatedChordRoot], key);
+                                output[key].Add(progression);
                             }
                         }
                     }
                 }
             }
         }
+        // 0b000010010001 for major chord
+        // 0b000010001001 for minor chord
+        Bit12Int targetArchetype = 0b000010001001;
+        HashSet<Bit12Int> uniqueTargets = [];
         for (int key = 0; key < 12; key++)
         {
             Console.WriteLine($"{key}:");
-            foreach (var outputLine in output[key])
+            foreach (var cp in output[key])
             {
-                Console.WriteLine(outputLine);
+                if (cp.TargetContains(targetArchetype))
+                {
+                    uniqueTargets.Add(cp.Target);
+                    string outputLine = $"{cp.Origin.ToIntervalString()} ({string.Join(", ", cp.OriginLCMs)}) {cp.Target.ToIntervalString()} ({string.Join(", ", cp.TargetLCMs)})";
+                    Console.WriteLine(outputLine);
+                }
             }
             Console.WriteLine();
         }
+        foreach (var uniqueTarget in uniqueTargets)
+            Console.WriteLine(uniqueTarget.ToIntervalString());
+
     }
 }

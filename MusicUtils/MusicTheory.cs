@@ -1,4 +1,5 @@
 ﻿using Fractions;
+using Melodroid_2.LCMs;
 namespace Melodroid_2.MusicUtils;
 
 public static class MusicTheory
@@ -55,17 +56,17 @@ public static class MusicTheory
         MajorSeventh,
         Octave
     ];
-    
+
     public static readonly List<Fraction> GoodFractionsNo9 = [
         Unison,
-        MinorSecond,        
+        MinorSecond,
         MajorSecond,
         MinorThird,
         MajorThird,
         PerfectFourth,
         PerfectFifth,
         MinorSixth,
-        MajorSixth,        
+        MajorSixth,
         MinorSeventh,
         MajorSeventh,
         Octave
@@ -99,14 +100,14 @@ public static class MusicTheory
         MinorSeventh
        ];
     public static readonly List<Fraction> LCM20 = [
-        Unison,        
+        Unison,
         MinorThird,
         MajorThird,
         PerfectFifth,
-        MinorSixth,        
+        MinorSixth,
         MinorSeventh
        ];
-    
+
     // A.K.A. C Major Scale A.K.A. G13
     public static readonly List<Fraction> LCM24 = [
         Unison,
@@ -127,7 +128,7 @@ public static class MusicTheory
             (double)MinorSixth,
             (double)MinorSecond,
             Tritone};
-    
+
     // LCM24 but played as perfect fifths - G Major scale
     public static readonly List<double> LCM24PerfectFifths = new List<double>() {
             (double)Unison,
@@ -158,7 +159,7 @@ public static class MusicTheory
         PerfectFifth,
         MinorSeventh
        ];
-    
+
     public static readonly List<Fraction> MajorChordFractions = [
         Unison,
         MajorThird,
@@ -196,4 +197,34 @@ public static class MusicTheory
 
     // Maximum Bin Radius - the maximum bin radius which causes overlap between the good fractions - half of the width 81/80 - 1
     public const double MaximumBinRadius = (81.0 / 80.0 - 1) / 2.0;
+}
+
+/// <summary>
+/// Chord progression in TET 12
+/// </summary>
+public class TET12ChordProgression
+{
+    public Bit12Int Origin { get; set; }
+    public List<int> OriginLCMs { get; set; }
+    public Bit12Int Target { get; set; }
+    public List<int> TargetLCMs { get; set; }
+    public int Key { get; set; }
+    public TET12ChordProgression(Bit12Int origin, List<int> originLCMs, Bit12Int target, List<int> targetLCMs, int key)
+    {
+        Origin = origin;
+        OriginLCMs = originLCMs;
+        Target = target;
+        TargetLCMs = targetLCMs;
+        Key = key;
+    }
+    public bool TargetContains(Bit12Int mask)
+    {
+        for (int i = 0; i < 12; i++)
+        {
+            Bit12Int rotatedMask = mask << i;
+            if ((Target & rotatedMask) == rotatedMask)
+                return true;
+        }
+        return false;
+    }
 }

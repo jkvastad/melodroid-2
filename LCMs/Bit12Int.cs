@@ -160,5 +160,5 @@ public struct Bit12Int
     public override string ToString()
     {
         return Convert.ToString(_value, 2).PadLeft(12, '0');
-    }
+    }    
 }
