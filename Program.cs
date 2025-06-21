@@ -7,6 +7,7 @@ using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using Serilog;
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 using static Melodroid_2.MusicUtils.MusicTheory;
 using static Melodroid_2.MusicUtils.Utils;
 
@@ -236,53 +237,110 @@ public class Program
         //    Console.WriteLine();
         //}
 
-        Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateUniqueChordOrigins();
 
-        foreach (var cardinality in origins.Keys)
-        {
-            // print header
-            Console.WriteLine($"--- Cardinality: {cardinality} ---");
-            Console.Write("".PadLeft(3 * cardinality)); // 2 chars for digits, one for space
-            for (int i = 0; i < 12; i++)
-                Console.Write($"{i,-2} ");
-            Console.WriteLine();
+        //// Calculate all unique chord origins
+        //Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateUniqueChordOrigins();
+        //List<int> excludedLcms = [18, 20]; // less than 24 but both seem to require numerator 25
 
-            foreach (var mask in origins[cardinality])
-            {
-                // print mask
-                Console.Write($"{mask.ToIntervalString()}".PadRight(3 * cardinality));
-                // print mask rows
-                var maskLcms = Tet12ChromaMask.GetAllMaskLCMs(mask, maxLcm: 15);
-                int rows = maskLcms.Values.MaxBy(lcms => lcms.Count)!.Count;
-                // write lcm at each fundamental
-                int paddingMultiples = 0;
-                foreach (var key in maskLcms.Keys)
-                {
-                    if (maskLcms[key].Count > 0)
-                    {
-                        Console.Write($"{maskLcms[key][0],-2} ".PadLeft((paddingMultiples + 1) * 3));
-                        paddingMultiples = 0;
-                    }
-                    else
-                        paddingMultiples++;
-                }
-                if (rows > 1)
-                {
-                    Console.WriteLine();
-                    Console.Write("".PadRight(3 * cardinality));
-                    foreach (var key in maskLcms.Keys)
-                    {
-                        if (maskLcms[key].Count > 1)
-                        {
-                            Console.Write($"{maskLcms[key][1],-2} ".PadLeft((paddingMultiples + 1) * 3));
-                            paddingMultiples = 0;
-                        }
-                        else
-                            paddingMultiples++;
-                    }
-                }
-                Console.WriteLine();
-            }
-        }
-    }
+        //foreach (var cardinality in origins.Keys)
+        //{
+        //    // print header
+        //    Console.WriteLine($"--- Cardinality: {cardinality} ---");
+        //    Console.Write("".PadLeft(3 * cardinality)); // 2 chars for digits, one for space
+        //    for (int i = 0; i < 12; i++)
+        //        Console.Write($"{i,-2} ");
+        //    Console.WriteLine();
+
+        //    foreach (var mask in origins[cardinality])
+        //    {
+        //        // print mask
+        //        Console.Write($"{mask.ToIntervalString()}".PadRight(3 * cardinality));
+        //        // print mask rows
+        //        Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.GetAllMaskLCMs(mask, maxLcm: 24);
+        //        // Exclude bad lcms
+        //        foreach (var key in maskLcms.Keys)
+        //            foreach (var excludedLcm in excludedLcms)
+        //                maskLcms[key].Remove(excludedLcm);
+
+        //        int rows = maskLcms.Values.MaxBy(lcms => lcms.Count)!.Count;
+        //        // write lcm at each fundamental
+        //        int paddingMultiples = 0;
+        //        foreach (var key in maskLcms.Keys)
+        //        {
+        //            if (maskLcms[key].Count > 0)
+        //            {
+        //                Console.Write($"{maskLcms[key][0],-2} ".PadLeft((paddingMultiples + 1) * 3));
+        //                paddingMultiples = 0;
+        //            }
+        //            else
+        //                paddingMultiples++;
+        //        }
+        //        if (rows > 1)
+        //        {
+        //            Console.WriteLine();
+        //            Console.Write("".PadRight(3 * cardinality));
+        //            foreach (var key in maskLcms.Keys)
+        //            {
+        //                if (maskLcms[key].Count > 1)
+        //                {
+        //                    Console.Write($"{maskLcms[key][1],-2} ".PadLeft((paddingMultiples + 1) * 3));
+        //                    paddingMultiples = 0;
+        //                }
+        //                else
+        //                    paddingMultiples++;
+        //            }
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //}
+
+    //    // Calculate tonal cover for melody
+    //    Bit12Int chord = 0b000010010001;
+    //    Bit12Int melodyBit = 0b000001000000;
+    //    Bit12Int totalComb = chord | melodyBit;
+    //    var combinations = chord.GetSetBitCombinations();
+    //    var melodyCombinations = combinations.Select(comb => comb | melodyBit);
+
+    //    Dictionary<int, List<string>> output = [];
+    //    for (int key = 0; key < 12; key++)
+    //        output[key] = [];
+
+    //    // Calculate overlapping factors
+    //    foreach (var melodyComb in melodyCombinations)
+    //    {
+    //        foreach (var comb in combinations)
+    //        {
+    //            // cover all keys?                
+    //            if (totalComb != (melodyComb | comb))
+    //                continue;
+
+    //            var combLcms = Tet12ChromaMask.GetAllMaskLCMs(comb);
+    //            var melodyLcms = Tet12ChromaMask.GetAllMaskLCMs(melodyComb);
+    //            for (int key = 0; key < 12; key++)
+    //            {
+    //                // match at key?
+    //                if (combLcms[key].Count > 0 && melodyLcms[key].Count > 0)
+    //                {
+    //                    // primes 2,3,5 can be upscaled to 8,9,10,12,15
+    //                    // - Any match in origin can share a factor with melody set via superset substitution, treating the origin as a subset
+    //                    // - Thus any match can work as a tonal cover as long as all keys are covered                        
+    //                    string combMatches = $"{comb.ToIntervalString()} ({string.Join(", ", combLcms[key])})";
+    //                    string melodyMatches = $"{melodyComb.ToIntervalString()} ({string.Join(", ", melodyLcms[key])})";
+    //                    output[key].Add(combMatches);
+    //                    output[key].Add(melodyMatches);
+    //                    output[key].Add("");
+    //                }
+    //            }
+    //        }
+    //    }
+    //    for (int key = 0; key < 12; key++)
+    //    {
+    //        Console.WriteLine($"{key}:");
+    //        foreach (var line in output[key])
+    //        {
+    //            Console.WriteLine(line);
+    //        }
+    //        Console.WriteLine();
+    //    }
+    //}
 }

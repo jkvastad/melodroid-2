@@ -161,7 +161,7 @@ public static class Utils
     /// <returns></returns>
     public static Dictionary<int, HashSet<Bit12Int>> CalculateUniqueChordOrigins()
     {
-        int[] legalLcms = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
+        int[] legalLcms = [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15];
         Dictionary<int, HashSet<Bit12Int>> chordOriginsByCardinality = [];
         for (int i = 0; i < 12; i++)
             chordOriginsByCardinality[i] = [];
@@ -170,7 +170,7 @@ public static class Utils
         for (int i = 0; i < BigInteger.Pow(2, 12); i++)
         {
             Bit12Int chromaMask = new(i);
-            
+
             // only consider root positions
             if ((chromaMask & 1) != 1)
                 continue;
