@@ -115,6 +115,11 @@ public struct Bit12Int
         return left._value != right;
     }
 
+    public static explicit operator uint(Bit12Int v)
+    {
+        return (uint)v._value;
+    }
+
     /// <summary>
     /// Get all non-zero bit combinations
     /// </summary>

@@ -6,7 +6,9 @@ using Melodroid_2.MidiMakers.RandomComposer;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using Serilog;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Numerics;
 using System.Threading.Tasks;
 using static Melodroid_2.MusicUtils.MusicTheory;
 using static Melodroid_2.MusicUtils.Utils;
@@ -294,53 +296,115 @@ public class Program
         //    }
         //}
 
-    //    // Calculate tonal cover for melody
-    //    Bit12Int chord = 0b000010010001;
-    //    Bit12Int melodyBit = 0b000001000000;
-    //    Bit12Int totalComb = chord | melodyBit;
-    //    var combinations = chord.GetSetBitCombinations();
-    //    var melodyCombinations = combinations.Select(comb => comb | melodyBit);
+        //    // Calculate tonal cover for melody
+        //    Bit12Int chord = 0b000010010001;
+        //    Bit12Int melodyBit = 0b000001000000;
+        //    Bit12Int totalComb = chord | melodyBit;
+        //    var combinations = chord.GetSetBitCombinations();
+        //    var melodyCombinations = combinations.Select(comb => comb | melodyBit);
 
-    //    Dictionary<int, List<string>> output = [];
-    //    for (int key = 0; key < 12; key++)
-    //        output[key] = [];
+        //    Dictionary<int, List<string>> output = [];
+        //    for (int key = 0; key < 12; key++)
+        //        output[key] = [];
 
-    //    // Calculate overlapping factors
-    //    foreach (var melodyComb in melodyCombinations)
-    //    {
-    //        foreach (var comb in combinations)
-    //        {
-    //            // cover all keys?                
-    //            if (totalComb != (melodyComb | comb))
-    //                continue;
+        //    // Calculate overlapping factors
+        //    foreach (var melodyComb in melodyCombinations)
+        //    {
+        //        foreach (var comb in combinations)
+        //        {
+        //            // cover all keys?                
+        //            if (totalComb != (melodyComb | comb))
+        //                continue;
 
-    //            var combLcms = Tet12ChromaMask.GetAllMaskLCMs(comb);
-    //            var melodyLcms = Tet12ChromaMask.GetAllMaskLCMs(melodyComb);
-    //            for (int key = 0; key < 12; key++)
-    //            {
-    //                // match at key?
-    //                if (combLcms[key].Count > 0 && melodyLcms[key].Count > 0)
-    //                {
-    //                    // primes 2,3,5 can be upscaled to 8,9,10,12,15
-    //                    // - Any match in origin can share a factor with melody set via superset substitution, treating the origin as a subset
-    //                    // - Thus any match can work as a tonal cover as long as all keys are covered                        
-    //                    string combMatches = $"{comb.ToIntervalString()} ({string.Join(", ", combLcms[key])})";
-    //                    string melodyMatches = $"{melodyComb.ToIntervalString()} ({string.Join(", ", melodyLcms[key])})";
-    //                    output[key].Add(combMatches);
-    //                    output[key].Add(melodyMatches);
-    //                    output[key].Add("");
-    //                }
-    //            }
-    //        }
-    //    }
-    //    for (int key = 0; key < 12; key++)
-    //    {
-    //        Console.WriteLine($"{key}:");
-    //        foreach (var line in output[key])
-    //        {
-    //            Console.WriteLine(line);
-    //        }
-    //        Console.WriteLine();
-    //    }
-    //}
+        //            var combLcms = Tet12ChromaMask.GetAllMaskLCMs(comb);
+        //            var melodyLcms = Tet12ChromaMask.GetAllMaskLCMs(melodyComb);
+        //            for (int key = 0; key < 12; key++)
+        //            {
+        //                // match at key?
+        //                if (combLcms[key].Count > 0 && melodyLcms[key].Count > 0)
+        //                {
+        //                    // primes 2,3,5 can be upscaled to 8,9,10,12,15
+        //                    // - Any match in origin can share a factor with melody set via superset substitution, treating the origin as a subset
+        //                    // - Thus any match can work as a tonal cover as long as all keys are covered                        
+        //                    string combMatches = $"{comb.ToIntervalString()} ({string.Join(", ", combLcms[key])})";
+        //                    string melodyMatches = $"{melodyComb.ToIntervalString()} ({string.Join(", ", melodyLcms[key])})";
+        //                    output[key].Add(combMatches);
+        //                    output[key].Add(melodyMatches);
+        //                    output[key].Add("");
+        //                }
+        //            }
+        //        }
+        //    }
+        //    for (int key = 0; key < 12; key++)
+        //    {
+        //        Console.WriteLine($"{key}:");
+        //        foreach (var line in output[key])
+        //        {
+        //            Console.WriteLine(line);
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //}
+
+        //// Calculate chord progressions
+        Bit12Int originChord = 0b000010010001;
+        var originCombinations = originChord.GetSetBitCombinations();
+        int ogSubsetMin = 3;
+        originCombinations = originCombinations.Where(comb => BitOperations.PopCount((uint)comb) >= ogSubsetMin).ToList();
+
+        int targetChordMaxSize = 5;
+        int targetChordMinSize = 2;
+        Dictionary<int, HashSet<Bit12Int>> uniqueChords = Utils.CalculateUniqueChordOrigins();
+        for (int cardinality = 0; cardinality < 12; cardinality++)
+            if (cardinality < targetChordMinSize || cardinality > targetChordMaxSize)
+                uniqueChords.Remove(cardinality);
+
+        Dictionary<Bit12Int, Dictionary<int, List<int>>> uniqueChordsToLcms = [];
+        foreach (var keypair in uniqueChords)
+            foreach (var chord in keypair.Value)
+                uniqueChordsToLcms[chord] = (Tet12ChromaMask.GetAllMaskLCMs(chord));
+
+        Dictionary<int, List<string>> output = [];
+        for (int key = 0; key < 12; key++)
+            output[key] = [];
+
+        // check all origin chord subsets versus all possible chords
+        foreach (var ogComb in originCombinations)
+        {
+            Dictionary<int, List<int>> ogCombLcms = Tet12ChromaMask.GetAllMaskLCMs(ogComb);
+            for (int key = 0; key < 12; key++)
+            {
+                for (int cardinality = targetChordMinSize; cardinality < targetChordMaxSize; cardinality++)
+                {
+                    foreach (var chord in uniqueChords[cardinality])
+                    {
+                        // all rotations of unique chords yields all chords
+                        for (int rotation = 0; rotation < 12; rotation++)
+                        {
+                            // matches with primes 2,3,5 can be upscaled to 8,9,10,12,15
+                            // - Any match in origin can share a factor with target via superset substitution, treating the origin as a subset                        
+                            // access rotation of unique chord lcms instead of calculating lcms of all rotated chords
+                            var chordLcms = uniqueChordsToLcms[chord];
+                            var rotatedChord = chord << rotation;
+                            int rotatedChordRoot = (key - rotation + 12) % 12;
+                            if (ogCombLcms[key].Count > 0 && chordLcms[rotatedChordRoot].Count > 0)
+                            {
+                                string outputLine = $"{ogComb.ToIntervalString()} ({string.Join(", ", ogCombLcms[key])}) {rotatedChord.ToIntervalString()} ({string.Join(", ", chordLcms[rotatedChordRoot])})";
+                                output[key].Add(outputLine);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int key = 0; key < 12; key++)
+        {
+            Console.WriteLine($"{key}:");
+            foreach (var outputLine in output[key])
+            {
+                Console.WriteLine(outputLine);
+            }
+            Console.WriteLine();
+        }
+    }
 }
