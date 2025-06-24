@@ -121,18 +121,15 @@ public class Program
         // Tonal Coverage Test                
         //var FractionsToSweep = new List<double>()
         //{
-        //    (double) MinorSeventh,
-        //    (double) MinorSecond,
-        //    (double) PerfectFourth,
-        //    (double) MajorSixth,
         //    (double) Unison,
         //    (double) MinorThird,
-        //    (double) Tritone,
+        //    (double) PerfectFifth,
+
         //};
         //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToList();
         //var tonalCoverageCalculator = new TonalCoverageCalculator(
         //    ratiosToSweep,
-        //    clusterWidth: 0.012);
+        //    clusterWidth: 0.022);
         //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 24))
         //    Console.WriteLine(consoleRow);
 
@@ -240,65 +237,65 @@ public class Program
         //}
 
 
-        //// Calculate all unique chord origins
-        //Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateUniqueChordOrigins();
-        //List<int> excludedLcms = [18, 20]; // less than 24 but both seem to require numerator 25
+        // Calculate all unique chord origins
+        Dictionary<int, HashSet<Bit12Int>> origins = Utils.CalculateUniqueChordOrigins();
+        List<int> excludedLcms = [18, 20]; // less than 24 but both seem to require numerator 25
 
-        //foreach (var cardinality in origins.Keys)
-        //{
-        //    // print header
-        //    Console.WriteLine($"--- Cardinality: {cardinality} ---");
-        //    Console.Write("".PadLeft(3 * cardinality)); // 2 chars for digits, one for space
-        //    for (int i = 0; i < 12; i++)
-        //        Console.Write($"{i,-2} ");
-        //    Console.WriteLine();
+        foreach (var cardinality in origins.Keys)
+        {
+            // print header
+            Console.WriteLine($"--- Cardinality: {cardinality} ---");
+            Console.Write("".PadLeft(3 * cardinality)); // 2 chars for digits, one for space
+            for (int i = 0; i < 12; i++)
+                Console.Write($"{i,-2} ");
+            Console.WriteLine();
 
-        //    foreach (var mask in origins[cardinality])
-        //    {
-        //        // print mask
-        //        Console.Write($"{mask.ToIntervalString()}".PadRight(3 * cardinality));
-        //        // print mask rows
-        //        Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.GetAllMaskLCMs(mask, maxLcm: 24);
-        //        // Exclude bad lcms
-        //        foreach (var key in maskLcms.Keys)
-        //            foreach (var excludedLcm in excludedLcms)
-        //                maskLcms[key].Remove(excludedLcm);
+            foreach (var mask in origins[cardinality])
+            {
+                // print mask
+                Console.Write($"{mask.ToIntervalString()}".PadRight(3 * cardinality));
+                // print mask rows
+                Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.GetAllMaskLCMs(mask, maxLcm: 24);
+                // Exclude bad lcms
+                foreach (var key in maskLcms.Keys)
+                    foreach (var excludedLcm in excludedLcms)
+                        maskLcms[key].Remove(excludedLcm);
 
-        //        int rows = maskLcms.Values.MaxBy(lcms => lcms.Count)!.Count;
-        //        // write lcm at each fundamental
-        //        int paddingMultiples = 0;
-        //        foreach (var key in maskLcms.Keys)
-        //        {
-        //            if (maskLcms[key].Count > 0)
-        //            {
-        //                Console.Write($"{maskLcms[key][0],-2} ".PadLeft((paddingMultiples + 1) * 3));
-        //                paddingMultiples = 0;
-        //            }
-        //            else
-        //                paddingMultiples++;
-        //        }
-        //        if (rows > 1)
-        //        {
-        //            Console.WriteLine();
-        //            Console.Write("".PadRight(3 * cardinality));
-        //            foreach (var key in maskLcms.Keys)
-        //            {
-        //                if (maskLcms[key].Count > 1)
-        //                {
-        //                    Console.Write($"{maskLcms[key][1],-2} ".PadLeft((paddingMultiples + 1) * 3));
-        //                    paddingMultiples = 0;
-        //                }
-        //                else
-        //                    paddingMultiples++;
-        //            }
-        //        }
-        //        Console.WriteLine();
-        //    }
-        //}
+                int rows = maskLcms.Values.MaxBy(lcms => lcms.Count)!.Count;
+                // write lcm at each fundamental
+                int paddingMultiples = 0;
+                foreach (var key in maskLcms.Keys)
+                {
+                    if (maskLcms[key].Count > 0)
+                    {
+                        Console.Write($"{maskLcms[key][0],-2} ".PadLeft((paddingMultiples + 1) * 3));
+                        paddingMultiples = 0;
+                    }
+                    else
+                        paddingMultiples++;
+                }
+                if (rows > 1)
+                {
+                    Console.WriteLine();
+                    Console.Write("".PadRight(3 * cardinality));
+                    foreach (var key in maskLcms.Keys)
+                    {
+                        if (maskLcms[key].Count > 1)
+                        {
+                            Console.Write($"{maskLcms[key][1],-2} ".PadLeft((paddingMultiples + 1) * 3));
+                            paddingMultiples = 0;
+                        }
+                        else
+                            paddingMultiples++;
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
 
         //    // Calculate tonal cover for melody
         //    Bit12Int chord = 0b000010010001;
-        //    Bit12Int melodyBit = 0b000001000000;
+        //    Bit12Int melodyBit = 0b000000001000;
         //    Bit12Int totalComb = chord | melodyBit;
         //    var combinations = chord.GetSetBitCombinations();
         //    var melodyCombinations = combinations.Select(comb => comb | melodyBit);
@@ -335,6 +332,7 @@ public class Program
         //            }
         //        }
         //    }
+
         //    for (int key = 0; key < 12; key++)
         //    {
         //        Console.WriteLine($"{key}:");
@@ -346,8 +344,9 @@ public class Program
         //    }
         //}
 
-        //// Calculate chord progressions
-        Bit12Int originChord = 0b000010010001;
+        // Calculate chord progressions        
+        Bit12Int originChord = 0b000010001001;
+        int maxLcm = 15;
         var originCombinations = originChord.GetSetBitCombinations();
         int ogSubsetMin = 3;
         originCombinations = originCombinations.Where(comb => BitOperations.PopCount((uint)comb) >= ogSubsetMin).ToList();
@@ -362,7 +361,7 @@ public class Program
         Dictionary<Bit12Int, Dictionary<int, List<int>>> uniqueChordsToLcms = [];
         foreach (var keypair in uniqueChords)
             foreach (var chord in keypair.Value)
-                uniqueChordsToLcms[chord] = (Tet12ChromaMask.GetAllMaskLCMs(chord));
+                uniqueChordsToLcms[chord] = (Tet12ChromaMask.GetAllMaskLCMs(chord, maxLcm: maxLcm));
 
         Dictionary<int, List<TET12ChordProgression>> output = [];
         for (int key = 0; key < 12; key++)
@@ -371,7 +370,7 @@ public class Program
         // check all origin chord subsets versus all possible chords
         foreach (var ogComb in originCombinations)
         {
-            Dictionary<int, List<int>> ogCombLcms = Tet12ChromaMask.GetAllMaskLCMs(ogComb);
+            Dictionary<int, List<int>> ogCombLcms = Tet12ChromaMask.GetAllMaskLCMs(ogComb, maxLcm: maxLcm);
             for (int key = 0; key < 12; key++)
             {
                 for (int cardinality = targetChordMinSize; cardinality < targetChordMaxSize; cardinality++)
@@ -383,9 +382,9 @@ public class Program
                         {
                             // matches with primes 2,3,5 can be upscaled to 8,9,10,12,15
                             // - Any match in origin can share a factor with target via superset substitution, treating the origin as a subset                        
-                            // access rotation of unique chord lcms instead of calculating lcms of all rotated chords
                             var chordLcms = uniqueChordsToLcms[chord];
                             var rotatedChord = chord << rotation;
+                            // access rotation of unique chord lcms instead of calculating lcms of all rotated chords
                             int rotatedChordRoot = (key - rotation + 12) % 12;
                             if (ogCombLcms[key].Count > 0 && chordLcms[rotatedChordRoot].Count > 0)
                             {
@@ -397,26 +396,36 @@ public class Program
                 }
             }
         }
+        // Enter a target archetype to check for progression
         // 0b000010010001 for major chord
         // 0b000010001001 for minor chord
-        Bit12Int targetArchetype = 0b000010001001;
+        Bit12Int targetArchetype = 0b000010010001;
         HashSet<Bit12Int> uniqueTargets = [];
+        Dictionary<Bit12Int, List<TET12ChordProgression>> uniqueTargetsProgressions = [];
         for (int key = 0; key < 12; key++)
         {
             Console.WriteLine($"{key}:");
-            foreach (var cp in output[key])
+            foreach (TET12ChordProgression cp in output[key])
             {
                 if (cp.TargetContains(targetArchetype))
                 {
-                    uniqueTargets.Add(cp.Target);
+                    if (!uniqueTargetsProgressions.ContainsKey(cp.Target))
+                        uniqueTargetsProgressions[cp.Target] = [];
+                    uniqueTargetsProgressions[cp.Target].Add(cp);
                     string outputLine = $"{cp.Origin.ToIntervalString()} ({string.Join(", ", cp.OriginLCMs)}) {cp.Target.ToIntervalString()} ({string.Join(", ", cp.TargetLCMs)})";
                     Console.WriteLine(outputLine);
                 }
             }
             Console.WriteLine();
         }
-        foreach (var uniqueTarget in uniqueTargets)
-            Console.WriteLine(uniqueTarget.ToIntervalString());
-
+        foreach (var uniqueTarget in uniqueTargetsProgressions.Keys)
+        {
+            Console.Write($"{uniqueTarget.ToIntervalString()}: ");
+            foreach (var progression in uniqueTargetsProgressions[uniqueTarget])
+            {
+                Console.Write($"({progression.Key} - {string.Join(", ", progression.OriginLCMs)} / {string.Join(", ", progression.TargetLCMs)}) ");
+            }
+            Console.WriteLine();
+        }
     }
 }
