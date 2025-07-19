@@ -23,12 +23,13 @@ public class Tet12TonalCoverCalculator
         Bit12Int tet12Keys,
         int minOriginSetSize = 3,
         int minComplementSetSize = 3,
-        bool upscale = true
+        bool upscale = true,
+        bool no15Collapse = true // if any lcm is 15, then (fundamental - 4) is not a legal key
         )
     {
         // Get all origin and complement subsets
         Dictionary<Bit12Int, List<(int fundamental, Bit12Int complement, int originLcm, int complementLcm)>> subsets = [];
-        HashSet<Bit12Int> allCombinations = [.. Bit12Int.GetSetBitCombinations(tet12Keys)];                
+        HashSet<Bit12Int> allCombinations = [.. Bit12Int.GetSetBitCombinations(tet12Keys)];
         HashSet<Bit12Int> allOrigins = allCombinations.Where(
             keys => BitOperations.PopCount((uint)keys.GetValue()) >= minOriginSetSize).ToHashSet();
         HashSet<Bit12Int> allComplements = allCombinations.Where(
@@ -99,7 +100,20 @@ public class Tet12TonalCoverCalculator
                                     if (lcm % originLcm == 0 && lcm % complementLcm == 0)
                                     {
                                         // add data for origin set, showing complement set, fundamental and origin/complement lcms
-                                        subsets[origin].Add((fundamental, complement, originLcm, complementLcm));
+                                        subsets[origin].Add((fundamental, complement, lcm, lcm));
+                                    }
+                                }
+                            }
+                            // if origin or complement uses fundamental - 4 when base is 15, exclude it
+                            if (no15Collapse)
+                            {
+                                (int fundamental, Bit12Int complement, int originLcm, int complementLcm) currentCover = subsets[origin][^1];
+                                if (currentCover.originLcm == 15 || currentCover.complementLcm == 15)
+                                {
+                                    HashSet<int> activeKeys = [.. currentCover.complement.ToIntervals(), .. origin.ToIntervals()];
+                                    if (activeKeys.Contains((fundamental + 8) % 12))
+                                    {
+                                        subsets[origin].RemoveAt(subsets[origin].Count - 1);
                                     }
                                 }
                             }
