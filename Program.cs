@@ -146,7 +146,7 @@ public class Program
         // 0b000010010001 for major chord
         // 0b000010001001 for minor chord
         // 0b000001001001 for dim chord
-        Bit12Int tet12CoverKeys = 0b001010110001;
+        Bit12Int tet12CoverKeys = 0b100010001001;
         var tonalCoverage = Tet12TonalCoverCalculator.CalculateTet12TonalCoverage(tet12CoverKeys);
         foreach (var origin in tonalCoverage.Keys)
         {
@@ -162,12 +162,6 @@ public class Program
             }
             Console.WriteLine();
         }
-
-        //var c7 = Tet12ChromaMask.GetAllMaskLCMs(0b010010010001, 24);
-        //foreach (var fundamental in c7.Keys)
-        //{
-        //    Console.WriteLine($"{fundamental,-2}: {string.Join(" ", c7[fundamental])}");
-        //}
 
         //// Octave Sweep Test                
         //var FractionsToSweep = new List<double>()
