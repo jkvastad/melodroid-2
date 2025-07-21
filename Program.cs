@@ -168,16 +168,16 @@ public class Program
         //{
         //(double)Unison,
         ////(double)MinorSecond,
-        ////(double)MajorSecond,
-        //(double)MinorThird,
-        ////(double)MajorThird,
+        //(double)MajorSecond,
+        ////(double)MinorThird,
+        //(double)MajorThird,
         ////(double)PerfectFourth,
         ////Tritone,
         //(double)PerfectFifth,
         ////(double)MinorSixth,
         ////(double)MajorSixth,
         ////(double)MinorSeventh,
-        ////(double)MajorSeventh
+        //(double)MajorSeventh
         //};
         //List<Fraction> ClusterTargets = GoodFractions;
         //double clusterWidth = 0.013;
@@ -382,6 +382,7 @@ public class Program
         //var originCombinations = originChord.GetSetBitCombinations();
         //int ogSubsetMin = 3;
         //originCombinations = originCombinations.Where(comb => BitOperations.PopCount((uint)comb) >= ogSubsetMin).ToList();
+        //List<int> excludedLcms = [18, 20]; // less than 24 but both seem to require numerator 25
 
         //int targetChordMaxSize = 4;
         //int targetChordMinSize = 2;
@@ -390,10 +391,21 @@ public class Program
         //    if (cardinality < targetChordMinSize || cardinality > targetChordMaxSize)
         //        uniqueChords.Remove(cardinality);
 
+        //// calculate all chord lcms
         //Dictionary<Bit12Int, Dictionary<int, List<int>>> uniqueChordsToLcms = [];
         //foreach (var keypair in uniqueChords)
+        //{
         //    foreach (var chord in keypair.Value)
-        //        uniqueChordsToLcms[chord] = (Tet12ChromaMask.GetAllMaskLCMs(chord, maxLcm: maxLcm));
+        //    {
+        //        // Exclude bad lcms
+        //        Dictionary<int, List<int>> maskLcms = Tet12ChromaMask.GetAllMaskLCMs(chord, maxLcm: maxLcm);
+        //        foreach (var key in maskLcms.Keys)
+        //            foreach (var excludedLcm in excludedLcms)
+        //                maskLcms[key].Remove(excludedLcm);
+
+        //        uniqueChordsToLcms[chord] = maskLcms;
+        //    }
+        //}
 
         //Dictionary<int, List<TET12ChordProgression>> output = [];
         //for (int key = 0; key < 12; key++)
@@ -432,7 +444,7 @@ public class Program
         //// 0b000010010001 for major chord
         //// 0b000010001001 for minor chord
         //// 0b000001001001 for dim chord
-        //Bit12Int targetArchetype = 0b000010010001;
+        //Bit12Int targetArchetype = 0b000010001001;
         //HashSet<Bit12Int> uniqueTargets = [];
         //Dictionary<Bit12Int, List<TET12ChordProgression>> uniqueTargetsProgressions = [];
         //for (int key = 0; key < 12; key++)
