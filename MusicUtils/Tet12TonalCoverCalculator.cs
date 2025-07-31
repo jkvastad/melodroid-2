@@ -105,7 +105,7 @@ public class Tet12TonalCoverCalculator
                                 }
                             }
                             // if origin or complement uses fundamental - 4 when base is 15, exclude it
-                            if (no15Collapse)
+                            if (no15Collapse && subsets[origin].Count > 0)
                             {
                                 (int fundamental, Bit12Int complement, int originLcm, int complementLcm) currentCover = subsets[origin][^1];
                                 if (currentCover.originLcm == 15 || currentCover.complementLcm == 15)

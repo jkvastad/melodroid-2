@@ -146,7 +146,7 @@ public class Program
         // 0b000010010001 for major chord
         // 0b000010001001 for minor chord
         // 0b000001001001 for dim chord
-        Bit12Int tet12CoverKeys = 0b000011001001;
+        Bit12Int tet12CoverKeys = 0b010010011001;
         var tonalCoverage = Tet12TonalCoverCalculator.CalculateTet12TonalCoverage(tet12CoverKeys, no15Collapse: true);
         foreach (var origin in tonalCoverage.Keys)
         {
@@ -171,11 +171,11 @@ public class Program
         //(double)MajorSecond,
         ////(double)MinorThird,
         //(double)MajorThird,
-        ////(double)PerfectFourth,
+        //(double)PerfectFourth,
         ////Tritone,
         //(double)PerfectFifth,
         ////(double)MinorSixth,
-        ////(double)MajorSixth,
+        //(double)MajorSixth,
         ////(double)MinorSeventh,
         //(double)MajorSeventh
         //};
@@ -444,7 +444,7 @@ public class Program
         //// 0b000010010001 for major chord
         //// 0b000010001001 for minor chord
         //// 0b000001001001 for dim chord
-        //Bit12Int targetArchetype = 0b000010001001;
+        //Bit12Int targetArchetype = 0b000001001001;
         //HashSet<Bit12Int> uniqueTargets = [];
         //Dictionary<Bit12Int, List<TET12ChordProgression>> uniqueTargetsProgressions = [];
         //for (int key = 0; key < 12; key++)
