@@ -94,6 +94,7 @@ public class Program
 
     static void Main(string[] args)
     {
+        ChordCalculator.PrintAllPragmaticTET12Chords();
         // Chord Crogression Test         
         //TODO: Fix error - missing 0 4 7 (10@4) -> 1 4 7 (15@4). Perhaps some error relating to cluster width
         // - result shows up at (large) cluster width 0.2
@@ -151,29 +152,29 @@ public class Program
         //    Console.WriteLine();
         //}
 
-        // Octave Sweep Test                
-        var FractionsToSweep = new List<double>()
-        {
-        (double)Unison,
-        //(double)MinorSecond,
-        //(double)MajorSecond,
-        //(double)MinorThird,
-        (double)MajorThird,
-        //(double)PerfectFourth,
-        //Tritone,
-        (double)PerfectFifth,
-        //(double)MinorSixth,
-        //(double)MajorSixth,
-        //(double)MinorSeventh,
-        //(double)MajorSeventh
-        };
-        List<Fraction> ClusterTargets = GoodFractions;
-        double clusterWidth = 0.013;
-        double sweepStep = 0.001;
-        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
-            Console.WriteLine(consoleRow);
+        //// Octave Sweep Test                
+        //var FractionsToSweep = new List<double>()
+        //{
+        //(double)Unison,
+        ////(double)MinorSecond,
+        ////(double)MajorSecond,
+        ////(double)MinorThird,
+        //(double)MajorThird,
+        ////(double)PerfectFourth,
+        ////Tritone,
+        //(double)PerfectFifth,
+        ////(double)MinorSixth,
+        ////(double)MajorSixth,
+        ////(double)MinorSeventh,
+        ////(double)MajorSeventh
+        //};
+        //List<Fraction> ClusterTargets = GoodFractions;
+        //double clusterWidth = 0.013;
+        //double sweepStep = 0.001;
+        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        //foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
+        //    Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
         //var fractionsToSweep2 = new List<double>()

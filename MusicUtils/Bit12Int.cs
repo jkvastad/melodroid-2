@@ -14,20 +14,34 @@ public struct Bit12Int
         _value = initialValue & _maxValue;
     }
 
-    public static Bit12Int operator <<(Bit12Int left, int rotations)
-    {
-        rotations %= _bitSize;
-        return new((left._value << rotations | left._value >> _bitSize - rotations) & _maxValue);
-    }
-    public static Bit12Int operator >>(Bit12Int left, int rotations)
-    {
-        rotations %= _bitSize;
-        return new((left._value >> rotations | left._value << _bitSize - rotations) & _maxValue);
-    }
-
     public int GetValue()
     {
         return _value;
+    }
+
+    public List<Bit12Int> GetAllRotations()
+    {
+        List<Bit12Int> rotations = [];
+        for (int i = 0; i < _bitSize; i++)
+        {
+            rotations.Add(new Bit12Int(_value) << i);
+        }
+        return rotations;
+    }
+
+    /// <summary>
+    /// Zero indexing
+    /// </summary>
+    /// <param name="bitNumber"></param>
+    /// <returns></returns>
+    public bool IsBitSet(int bitNumber)
+    {
+        if (bitNumber > 11 || bitNumber < 0)
+            return false;
+        int bitmask = 1 << bitNumber;
+        if ((_value & bitmask) == bitmask)
+            return true;
+        return false;
     }
 
     public static string Bit12IntToIntervalString(Bit12Int binaryKeySet)
@@ -59,6 +73,16 @@ public struct Bit12Int
 
     public readonly HashSet<int> ToIntervals() => Bit12IntToIntervals(_value);
 
+    public static Bit12Int operator <<(Bit12Int left, int rotations)
+    {
+        rotations %= _bitSize;
+        return new((left._value << rotations | left._value >> _bitSize - rotations) & _maxValue);
+    }
+    public static Bit12Int operator >>(Bit12Int left, int rotations)
+    {
+        rotations %= _bitSize;
+        return new((left._value >> rotations | left._value << _bitSize - rotations) & _maxValue);
+    }
 
     public static int operator |(Bit12Int left, int right)
     {
@@ -159,5 +183,5 @@ public struct Bit12Int
     public override string ToString()
     {
         return Convert.ToString(_value, 2).PadLeft(12, '0');
-    }    
+    }
 }
