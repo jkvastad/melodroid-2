@@ -1,6 +1,5 @@
 ﻿using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Interaction;
-using Melodroid_2.LCMs;
 using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
 using Serilog;

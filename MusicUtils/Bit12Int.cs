@@ -1,7 +1,6 @@
 ﻿using System.Text;
-using System.Threading.Tasks;
 
-namespace Melodroid_2.LCMs;
+namespace Melodroid_2.MusicUtils;
 
 public struct Bit12Int
 {
@@ -18,12 +17,12 @@ public struct Bit12Int
     public static Bit12Int operator <<(Bit12Int left, int rotations)
     {
         rotations %= _bitSize;
-        return new((left._value << rotations | left._value >> (_bitSize - rotations)) & _maxValue);
+        return new((left._value << rotations | left._value >> _bitSize - rotations) & _maxValue);
     }
     public static Bit12Int operator >>(Bit12Int left, int rotations)
     {
         rotations %= _bitSize;
-        return new((left._value >> rotations | left._value << (_bitSize - rotations)) & _maxValue);
+        return new((left._value >> rotations | left._value << _bitSize - rotations) & _maxValue);
     }
 
     public int GetValue()
@@ -36,7 +35,7 @@ public struct Bit12Int
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 12; i++)
         {
-            if (((binaryKeySet >> i) & 1) == 1)
+            if ((binaryKeySet >> i & 1) == 1)
                 sb.Append($"{i} ");
         }
         if (sb.Length > 1)
@@ -51,7 +50,7 @@ public struct Bit12Int
         HashSet<int> intervals = new();
         for (int i = 0; i < 12; i++)
         {
-            if (((binaryKeySet >> i) & 1) == 1)
+            if ((binaryKeySet >> i & 1) == 1)
                 intervals.Add(i);
         }
 
@@ -132,7 +131,7 @@ public struct Bit12Int
         // Find positions of set bits
         for (int i = 0; i < 12; i++)
         {
-            if ((mask & (1 << i)) != 0)
+            if ((mask & 1 << i) != 0)
                 setBitPositions.Add(i);
         }
 
@@ -146,8 +145,8 @@ public struct Bit12Int
             // convert subset bits to (absolute) bit positions
             for (int bit = 0; bit < setBitPositions.Count; bit++)
             {
-                if ((subset & (1 << bit)) != 0)
-                    combination |= (1 << setBitPositions[bit]);
+                if ((subset & 1 << bit) != 0)
+                    combination |= 1 << setBitPositions[bit];
             }
             combinations.Add(combination);
         }

@@ -1,18 +1,6 @@
 ﻿using Fractions;
-using Melodroid_2.LCMs;
-using Melodroid_2.MidiMakers;
-using Melodroid_2.MidiMakers.ChromaComposer;
-using Melodroid_2.MidiMakers.RandomComposer;
-using Melodroid_2.MidiMakers.TonalCoverComposer;
 using Melodroid_2.MusicUtils;
-using Serilog;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
 using static Melodroid_2.MusicUtils.MusicTheory;
-using static Melodroid_2.MusicUtils.Utils;
 
 namespace Melodroid_2;
 
@@ -142,50 +130,50 @@ public class Program
         //foreach (var consoleRow in tonalCoverageCalculator.GetConsoleOutput(3, 2, maxSubsetLcm: 24))
         //    Console.WriteLine(consoleRow);
 
-        // Tet12 Tonal Coverage Test
-        // 0b000010010001 for major chord
-        // 0b000010001001 for minor chord
-        // 0b000001001001 for dim chord
-        Bit12Int tet12CoverKeys = 0b010010011001;
-        var tonalCoverage = Tet12TonalCoverCalculator.CalculateTet12TonalCoverage(tet12CoverKeys, no15Collapse: true);
-        foreach (var origin in tonalCoverage.Keys)
-        {
-            Console.WriteLine(origin.ToIntervalString());
-            var sortedCoverage = tonalCoverage[origin].OrderBy(data => data.fundamental);
-            foreach (var (fundamental, complement, originLcm, complementLcm) in sortedCoverage)
-            {
-                Console.Write($"{fundamental,-2}: ");
-                Console.Write($"{originLcm,-2} + ");
-                Console.Write($"{complementLcm,-2} - ");
-                Console.Write($"{complement.ToIntervalString()} ");
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-        }
-
-        //// Octave Sweep Test                
-        //var FractionsToSweep = new List<double>()
+        //// Tet12 Tonal Coverage Test
+        //// 0b000010010001 for major chord
+        //// 0b000010001001 for minor chord
+        //// 0b000001001001 for dim chord
+        //Bit12Int tet12CoverKeys = 0b001010001001;
+        //var tonalCoverage = Tet12TonalCoverCalculator.CalculateTet12TonalCoverage(tet12CoverKeys, no15Collapse: true);
+        //foreach (var origin in tonalCoverage.Keys)
         //{
-        //(double)Unison,
-        ////(double)MinorSecond,
+        //    Console.WriteLine(origin.ToIntervalString());
+        //    var sortedCoverage = tonalCoverage[origin].OrderBy(data => data.fundamental);
+        //    foreach (var (fundamental, complement, originLcm, complementLcm) in sortedCoverage)
+        //    {
+        //        Console.Write($"{fundamental,-2}: ");
+        //        Console.Write($"{originLcm,-2} + ");
+        //        Console.Write($"{complementLcm,-2} - ");
+        //        Console.Write($"{complement.ToIntervalString()} ");
+        //        Console.WriteLine();
+        //    }
+        //    Console.WriteLine();
+        //}
+
+        // Octave Sweep Test                
+        var FractionsToSweep = new List<double>()
+        {
+        (double)Unison,
+        //(double)MinorSecond,
         //(double)MajorSecond,
-        ////(double)MinorThird,
-        //(double)MajorThird,
+        //(double)MinorThird,
+        (double)MajorThird,
         //(double)PerfectFourth,
-        ////Tritone,
-        //(double)PerfectFifth,
-        ////(double)MinorSixth,
+        //Tritone,
+        (double)PerfectFifth,
+        //(double)MinorSixth,
         //(double)MajorSixth,
-        ////(double)MinorSeventh,
+        //(double)MinorSeventh,
         //(double)MajorSeventh
-        //};
-        //List<Fraction> ClusterTargets = GoodFractions;
-        //double clusterWidth = 0.013;
-        //double sweepStep = 0.001;
-        //var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
-        //OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
-        //foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: false, skipDuplicateResults: true))
-        //    Console.WriteLine(consoleRow);
+        };
+        List<Fraction> ClusterTargets = GoodFractions;
+        double clusterWidth = 0.013;
+        double sweepStep = 0.001;
+        var ratiosToSweep = FractionsToSweep.Select(fraction => (double)fraction).ToHashSet();
+        OctaveSweep sweep = new(ratiosToSweep, ClusterTargets, clusterWidth, sweepStep);
+        foreach (var consoleRow in sweep.GetConsoleOutput(fullMatchOnly: true, skipDuplicateResults: true))
+            Console.WriteLine(consoleRow);
 
         //Console.WriteLine("---");
         //var fractionsToSweep2 = new List<double>()
@@ -323,7 +311,7 @@ public class Program
         //    }
         //}
 
-        //    // Calculate tonal cover for melody
+        //// Calculate tonal cover for melody
         //    Bit12Int chord = 0b000010010001;
         //    Bit12Int melodyBit = 0b000000001000;
         //    Bit12Int totalComb = chord | melodyBit;
@@ -377,7 +365,8 @@ public class Program
         //// Calculate chord progressions        
         //// 0b000010010001 for major chord
         //// 0b000010001001 for minor chord
-        //Bit12Int originChord = 0b000010010001;
+        //// 0b000001001001 for dim chord
+        //Bit12Int originChord = 0b000010001001;
         //int maxLcm = 24;
         //var originCombinations = originChord.GetSetBitCombinations();
         //int ogSubsetMin = 3;
@@ -444,7 +433,7 @@ public class Program
         //// 0b000010010001 for major chord
         //// 0b000010001001 for minor chord
         //// 0b000001001001 for dim chord
-        //Bit12Int targetArchetype = 0b000001001001;
+        //Bit12Int targetArchetype = 0b000010010001;
         //HashSet<Bit12Int> uniqueTargets = [];
         //Dictionary<Bit12Int, List<TET12ChordProgression>> uniqueTargetsProgressions = [];
         //for (int key = 0; key < 12; key++)

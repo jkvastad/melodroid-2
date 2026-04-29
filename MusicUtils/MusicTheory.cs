@@ -1,5 +1,4 @@
 ﻿using Fractions;
-using Melodroid_2.LCMs;
 namespace Melodroid_2.MusicUtils;
 
 public static class MusicTheory
