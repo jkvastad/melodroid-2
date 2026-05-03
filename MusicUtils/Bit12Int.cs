@@ -1,7 +1,9 @@
 ﻿using System.Text;
-
 namespace Melodroid_2.MusicUtils;
 
+/// <summary>
+/// Twelve bit integer for working with TET12 bit mask rotations, respecting octave equivalence when doing bit shifts (wrap around)
+/// </summary>
 public struct Bit12Int
 {
     private const int _bitSize = 12;
