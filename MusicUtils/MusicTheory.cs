@@ -79,6 +79,36 @@ public static class MusicTheory
         MinorSeventh
        ];
 
+    public static readonly List<Fraction> LCM2 = [
+        PerfectFifth,
+       ];
+
+    // Major chord on the perfect fourth
+    public static readonly List<Fraction> LCM3 = [
+        PerfectFourth,
+        MajorSixth,
+       ];
+
+    // Major chord
+    public static readonly List<Fraction> LCM4 = [
+        MajorThird,
+        PerfectFifth,
+       ];
+
+    // Major chord on the minor sixth with added second
+    public static readonly List<Fraction> LCM5 = [
+        MinorThird,
+        MinorSixth,
+        MinorSeventh
+       ];
+
+    // Major chord on the perfect fourth with added second
+    public static readonly List<Fraction> LCM6 = [
+        PerfectFourth,
+        PerfectFifth,
+        MajorSixth,
+       ];
+
     // A major ninth
     public static readonly List<Fraction> LCM8 = [
         Unison,
@@ -98,6 +128,7 @@ public static class MusicTheory
         MajorSixth,
         MinorSeventh
        ];
+
     public static readonly List<Fraction> LCM20 = [
         Unison,
         MinorThird,
