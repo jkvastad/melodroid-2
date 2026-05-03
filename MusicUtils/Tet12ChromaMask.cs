@@ -112,7 +112,7 @@ public class Tet12ChromaMask
     {
         if (depth == jaggedArray.Count)
         {
-            results.Add(new List<T>(current));
+            results.Add([.. current]);
             return;
         }
 

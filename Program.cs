@@ -95,6 +95,8 @@ public class Program
     static void Main(string[] args)
     {
         ChordCalculator.PrintAllPragmaticTET12Chords();
+
+
         // Chord Crogression Test         
         //TODO: Fix error - missing 0 4 7 (10@4) -> 1 4 7 (15@4). Perhaps some error relating to cluster width
         // - result shows up at (large) cluster width 0.2
@@ -156,13 +158,13 @@ public class Program
         //var FractionsToSweep = new List<double>()
         //{
         //(double)Unison,
-        ////(double)MinorSecond,
+        //(double)MinorSecond,
         ////(double)MajorSecond,
-        ////(double)MinorThird,
-        //(double)MajorThird,
+        //(double)MinorThird,
+        ////(double)MajorThird,
         ////(double)PerfectFourth,
         ////Tritone,
-        //(double)PerfectFifth,
+        ////(double)PerfectFifth,
         ////(double)MinorSixth,
         ////(double)MajorSixth,
         ////(double)MinorSeventh,
